@@ -1,0 +1,20 @@
+{
+  "name": "dungeons-3d",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write ."
+  },
+  "dependencies": {
+    "@types/three": "^0.152.1",
+    "three": "^0.153.0"
+  },
+  "devDependencies": {
+    "prettier": "^2.8.8",
+    "typescript": "^5.1.3",
+    "vite": "^4.3.9"
+  }
+}
