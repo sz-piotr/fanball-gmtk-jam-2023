@@ -1,17 +1,18 @@
-import { KeyboardInput } from "../input/KeyboardInput";
-import { MappedInput } from "../input/MappedInput";
+import { KeyboardInput } from "./KeyboardInput";
+import { MappedInput } from "./MappedInput";
 
-export type Actions = "left" | "right" | "up" | "down";
+const mapping = {
+  left: "ArrowLeft",
+  right: "ArrowRight",
+  up: "ArrowUp",
+  down: "ArrowDown",
+};
+
+export type Actions = keyof typeof mapping;
 export type Input = MappedInput<Actions>;
 
 export function initInput() {
   const keyboardInput = new KeyboardInput();
-  const mapping: Record<Actions, string> = {
-    left: "ArrowLeft",
-    right: "ArrowRight",
-    up: "ArrowUp",
-    down: "ArrowDown",
-  };
   const mappedInput = new MappedInput(keyboardInput, mapping);
 
   keyboardInput.startListening();

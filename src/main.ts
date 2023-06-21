@@ -1,4 +1,4 @@
-import { initInput, updateInput } from "./systems/input";
+import { initInput, updateInput } from "./systems/input/inputSystem";
 import { initResize } from "./systems/resize";
 import { initStats, updateStatsBegin, updateStatsEnd } from "./systems/stats";
 import { updateWorld } from "./systems/update";

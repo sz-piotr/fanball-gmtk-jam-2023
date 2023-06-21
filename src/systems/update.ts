@@ -1,4 +1,4 @@
-import { Input } from "./input";
+import { Input } from "./input/inputSystem";
 import { World } from "./world";
 
 export function updateWorld(world: World, input: Input) {
