@@ -92,12 +92,17 @@ export function render(world: World) {
 
     const assets = getAssets(player);
 
-    const IMAGE_SCALE = 0.3;
+    const leftLegRotation = Math.PI / 4;
+    const rightLegRotation = Math.PI / 4;
+    const leftLegStraight = true;
+    const rightLegStraight = false;
+
+    const IMAGE_SCALE = 0.6;
 
     const BODY_IMG_WIDTH = 100 * IMAGE_SCALE;
     const BODY_IMG_HEIGHT = 200 * IMAGE_SCALE;
     const BODY_IMG_CENTER_X = 50 * IMAGE_SCALE;
-    const BODY_IMG_CENTER_Y = 200 * IMAGE_SCALE;
+    const BODY_IMG_CENTER_Y = 180 * IMAGE_SCALE;
 
     const topX = position.x - BODY_IMG_CENTER_X;
     const topY = position.y - BODY_IMG_CENTER_Y;
@@ -109,10 +114,50 @@ export function render(world: World) {
       ctx.translate(topX, topY);
     }
 
-    ctx.drawImage(assets.legStraight, 0, 0, BODY_IMG_WIDTH, BODY_IMG_HEIGHT);
-    ctx.drawImage(assets.legBent, 0, 0, BODY_IMG_WIDTH, BODY_IMG_HEIGHT);
+    drawRotatedImage(
+      ctx,
+      leftLegStraight ? assets.legStraight : assets.legBent,
+      leftLegStraight ? 0 : -20 * IMAGE_SCALE,
+      0,
+      BODY_IMG_WIDTH,
+      BODY_IMG_HEIGHT,
+      (leftLegStraight ? 42 : 62) * IMAGE_SCALE,
+      131 * IMAGE_SCALE,
+      leftLegRotation
+    );
+    drawRotatedImage(
+      ctx,
+      rightLegStraight ? assets.legStraight : assets.legBent,
+      rightLegStraight ? 20 * IMAGE_SCALE : 0,
+      0,
+      BODY_IMG_WIDTH,
+      BODY_IMG_HEIGHT,
+      (rightLegStraight ? 42 : 62) * IMAGE_SCALE,
+      131 * IMAGE_SCALE,
+      rightLegRotation
+    );
     ctx.drawImage(assets.body, 0, 0, BODY_IMG_WIDTH, BODY_IMG_HEIGHT);
 
     ctx.setTransform(1, 0, 0, 1, 0, 0);
   }
+}
+
+function drawRotatedImage(
+  ctx: CanvasRenderingContext2D,
+  image: HTMLImageElement,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  centerX: number,
+  centerY: number,
+  angle: number
+) {
+  ctx.save();
+  ctx.translate(x + centerX, y + centerY);
+  ctx.fillStyle = "black";
+  ctx.rotate(angle);
+  ctx.translate(-x - centerX, -y - centerY);
+  ctx.drawImage(image, x, y, width, height);
+  ctx.restore();
 }
