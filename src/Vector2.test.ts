@@ -22,6 +22,23 @@ describe(Vector2.name, () => {
     expect(v2.y).toEqual(2);
   });
 
+  describe(Vector2.prototype.set, () => {
+    it("works with vectors", () => {
+      const v = new Vector2(1, 2).set(new Vector2(3, 4));
+      expect(v).toEqual(new Vector2(3, 4));
+    });
+
+    it("works with one scalar", () => {
+      const v = new Vector2(1, 2).set(3);
+      expect(v).toEqual(new Vector2(3, 3));
+    });
+
+    it("works with two scalars", () => {
+      const v = new Vector2(1, 2).set(3, 4);
+      expect(v).toEqual(new Vector2(3, 4));
+    });
+  });
+
   describe(Vector2.prototype.add, () => {
     it("works with vectors", () => {
       const v = new Vector2(1, 2).add(new Vector2(3, 4));
@@ -87,6 +104,23 @@ describe(Vector2.name, () => {
     it("works with two scalars", () => {
       const v = new Vector2(1, 2).div(3, 4);
       expect(v).toEqual(new Vector2(1 / 3, 2 / 4));
+    });
+  });
+
+  describe(Vector2.prototype.rotate, () => {
+    it("90 degrees", () => {
+      const v = new Vector2(1, 2).rotate(Math.PI / 2);
+      expect(v.toFixed(6)).toEqual(new Vector2(-2, 1));
+    });
+
+    it("180 degrees", () => {
+      const v = new Vector2(1, 2).rotate(Math.PI);
+      expect(v.toFixed(6)).toEqual(new Vector2(-1, -2));
+    });
+
+    it("360 degrees", () => {
+      const v = new Vector2(1, 2).rotate(Math.PI * 2);
+      expect(v.toFixed(6)).toEqual(new Vector2(1, 2));
     });
   });
 

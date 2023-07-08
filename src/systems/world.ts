@@ -28,10 +28,15 @@ interface Player {
   controlRadius: number;
 }
 
+interface Ball {
+  position: Vector2;
+  owner?: Player;
+}
+
 export interface World {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
-  ball: Vector2;
+  ball: Ball;
   field: Field;
   goals: Goal[];
   players: Player[];
@@ -51,7 +56,9 @@ export function initWorld(): World {
   return {
     canvas,
     ctx,
-    ball: new Vector2(0, 0),
+    ball: {
+      position: new Vector2(0, 0),
+    },
     field: {
       position: new Vector2(-FIELD_WIDTH / 2, -FIELD_HEIGHT / 2),
       width: FIELD_WIDTH,

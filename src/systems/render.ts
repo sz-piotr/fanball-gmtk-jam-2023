@@ -38,13 +38,27 @@ export function render(world: World) {
     );
   }
 
-  const ballPosition = toScreenSpace(world.ball);
+  const ballPosition = toScreenSpace(world.ball.position);
   ctx.fillStyle = "white";
   ctx.beginPath();
   ctx.arc(ballPosition.x, ballPosition.y, 10, 0, 2 * Math.PI);
   ctx.fill();
 
   world.players.sort((a, b) => a.position.y - b.position.y);
+
+  for (const player of world.players) {
+    const position = toScreenSpace(player.position);
+    ctx.strokeStyle = "white";
+    ctx.beginPath();
+    ctx.arc(
+      position.x,
+      position.y,
+      player.controlRadius * scale,
+      0,
+      2 * Math.PI
+    );
+    ctx.stroke();
+  }
 
   for (const player of world.players) {
     ctx.fillStyle = player.team;
