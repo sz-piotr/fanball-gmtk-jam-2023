@@ -1,3 +1,19 @@
+@font-face {
+  font-display: block;
+  font-family: "Source Sans 3";
+  font-style: normal;
+  font-weight: 400;
+  src: url("./fonts/source-sans-3-v9-latin-regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-display: block;
+  font-family: "Source Sans 3";
+  font-style: normal;
+  font-weight: 700;
+  src: url("./fonts/source-sans-3-v9-latin-700.woff2") format("woff2");
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

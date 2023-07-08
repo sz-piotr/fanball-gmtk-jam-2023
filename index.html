@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="overflow-hidden bg-black w-full h-full">
+<html lang="en" class="overflow-hidden bg-black w-full h-full font-sans">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,5 +10,36 @@
   </head>
   <body>
     <script type="module" src="/src/main.ts"></script>
+    <div
+      class="w-[800px] h-[600px] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10"
+    >
+      <div
+        class="absolute bottom-2 left-0 w-full flex items-center justify-center"
+      >
+        <div
+          class="bg-slate-50 flex text-center text-white shadow-xl rounded overflow-hidden"
+        >
+          <div
+            id="left-team-name"
+            class="w-[40px] bg-white text-black font-bold"
+          >
+            BLU
+          </div>
+          <div id="left-team-score" class="w-[20px] bg-blue-600 font-bold">
+            1
+          </div>
+          <div id="timer" class="w-[50px] bg-zinc-900">12:50</div>
+          <div id="right-team-score" class="w-[20px] bg-red-600 font-bold">
+            1
+          </div>
+          <div
+            id="right-team-name"
+            class="w-[40px] bg-white text-black font-bold"
+          >
+            RED
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
