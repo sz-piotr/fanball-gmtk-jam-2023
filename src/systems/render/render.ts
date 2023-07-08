@@ -13,24 +13,16 @@ export function render(world: World) {
   const scale = (width * 0.8) / world.field.rect.size.x;
 
   function toScreenSpace(vector: { x: number; y: number }) {
-    const SCREEN_X1 = 107;
-    const SCREEN_W1 = width - 2 * SCREEN_X1;
-    const SCREEN_Y1 = 309;
+    const SCREEN_X1 = 19.05;
+    const SCREEN_Y1 = 311.54;
+    const SCREEN_W = 761.9;
+    const SCREEN_H = 276.92;
 
-    const SCREEN_X2 = 24;
-    const SCREEN_W2 = width - 2 * SCREEN_X2;
-    const SCREEN_Y2 = 584;
+    const SCREEN_CENTER_X = SCREEN_X1 + SCREEN_W / 2;
+    const SCREEN_CENTER_Y = SCREEN_Y1 + SCREEN_H / 2;
 
-    const SCREEN_CENTER_X = width / 2;
-    const SCREEN_CENTER_Y = (SCREEN_Y2 + SCREEN_Y1) / 2;
-
-    const slopeX = (SCREEN_W2 - SCREEN_W1) / (SCREEN_Y2 - SCREEN_Y1);
-    const scaleY = (SCREEN_Y2 - SCREEN_Y1) / world.field.rect.size.y;
-    // TODO: Y is actually calculated incorrectly
-    const y = vector.y * scaleY + SCREEN_CENTER_Y;
-    const yOffset = y - SCREEN_Y1;
-    const yWidth = SCREEN_W1 + yOffset * slopeX;
-    const scaleX = yWidth / world.field.rect.size.x;
+    const scaleY = SCREEN_H / world.field.rect.size.y;
+    const scaleX = SCREEN_W / world.field.rect.size.x;
 
     return {
       x: vector.x * scaleX + SCREEN_CENTER_X,
@@ -38,41 +30,9 @@ export function render(world: World) {
     };
   }
 
-  function fillRect(x: number, y: number, width: number, height: number) {
-    ctx.beginPath();
-    const topLeft = toScreenSpace({ x, y });
-    ctx.moveTo(topLeft.x, topLeft.y);
-    const topRight = toScreenSpace({ x: x + width, y });
-    ctx.lineTo(topRight.x, topRight.y);
-    const bottomRight = toScreenSpace({ x: x + width, y: y + height });
-    ctx.lineTo(bottomRight.x, bottomRight.y);
-    const bottomLeft = toScreenSpace({ x, y: y + height });
-    ctx.lineTo(bottomLeft.x, bottomLeft.y);
-    ctx.closePath();
-    ctx.fill();
-  }
-
   ctx.clearRect(0, 0, width, height);
 
   ctx.drawImage(backgroundImage, 0, 0, width, height);
-
-  // ctx.fillStyle = "limegreen";
-  // fillRect(
-  //   world.field.rect.position.x,
-  //   world.field.rect.position.y,
-  //   world.field.rect.size.x,
-  //   world.field.rect.size.y
-  // );
-
-  for (const goal of world.goals) {
-    ctx.fillStyle = goal.team;
-    fillRect(
-      goal.rect.position.x,
-      goal.rect.position.y,
-      goal.rect.size.x,
-      goal.rect.size.y
-    );
-  }
 
   const ballPosition = toScreenSpace(world.ball.position);
   ctx.fillStyle = "white";
@@ -84,24 +44,6 @@ export function render(world: World) {
 
   for (const player of world.players) {
     const position = toScreenSpace(player.position);
-    ctx.strokeStyle = "white";
-    ctx.beginPath();
-    ctx.arc(
-      position.x,
-      position.y,
-      player.controlRadius * scale,
-      0,
-      2 * Math.PI
-    );
-    ctx.stroke();
-  }
-
-  for (const player of world.players) {
-    const position = toScreenSpace(player.position);
-    ctx.fillStyle = "black";
-    ctx.beginPath();
-    ctx.arc(position.x, position.y, 3, 0, 2 * Math.PI);
-    ctx.fill();
 
     const assets = getAssets(player);
 
@@ -110,7 +52,7 @@ export function render(world: World) {
     const leftLegStraight = player.animation.leftLeg.isStraight;
     const rightLegStraight = player.animation.rightLeg.isStraight;
 
-    const IMAGE_SCALE = 0.3;
+    const IMAGE_SCALE = 0.4;
 
     const BODY_IMG_WIDTH = 100 * IMAGE_SCALE;
     const BODY_IMG_HEIGHT = 200 * IMAGE_SCALE;
