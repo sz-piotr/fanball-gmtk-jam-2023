@@ -4,7 +4,7 @@ export function render(world: World) {
   const { ctx } = world;
   const { width, height } = world.canvas;
 
-  const scale = (width * 0.8) / world.field.width;
+  const scale = (width * 0.8) / world.field.rect.size.x;
 
   function toScreenSpace(vector: { x: number; y: number }) {
     return {
@@ -18,23 +18,23 @@ export function render(world: World) {
   ctx.fillStyle = "darkgreen";
   ctx.fillRect(0, 0, width, height);
 
-  const fieldPosition = toScreenSpace(world.field.position);
+  const fieldPosition = toScreenSpace(world.field.rect.position);
   ctx.fillStyle = "limegreen";
   ctx.fillRect(
     fieldPosition.x,
     fieldPosition.y,
-    world.field.width * scale,
-    world.field.height * scale
+    world.field.rect.size.x * scale,
+    world.field.rect.size.y * scale
   );
 
   for (const goal of world.goals) {
     ctx.fillStyle = goal.team;
-    const position = toScreenSpace(goal.position);
+    const position = toScreenSpace(goal.rect.position);
     ctx.fillRect(
       position.x,
       position.y,
-      goal.width * scale,
-      goal.height * scale
+      goal.rect.size.x * scale,
+      goal.rect.size.y * scale
     );
   }
 

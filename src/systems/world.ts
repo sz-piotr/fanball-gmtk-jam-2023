@@ -1,17 +1,14 @@
-import { Vector2 } from "../Vector2";
+import { Vector2 } from "../math/Vector2";
 import { IS_DEVELOPMENT } from "../config";
+import { Rect } from "../math/Rect";
 
 export interface Field {
-  position: Vector2;
-  width: number;
-  height: number;
+  rect: Rect;
 }
 
 export interface Goal {
   team: "red" | "blue";
-  position: Vector2;
-  width: number;
-  height: number;
+  rect: Rect;
 }
 
 export interface Player {
@@ -60,22 +57,25 @@ export function initWorld(): World {
       position: new Vector2(0, 0),
     },
     field: {
-      position: new Vector2(-FIELD_WIDTH / 2, -FIELD_HEIGHT / 2),
-      width: FIELD_WIDTH,
-      height: FIELD_HEIGHT,
+      rect: new Rect(
+        new Vector2(-FIELD_WIDTH / 2, -FIELD_HEIGHT / 2),
+        new Vector2(FIELD_WIDTH, FIELD_HEIGHT)
+      ),
     },
     goals: [
       {
         team: "red",
-        position: new Vector2(-FIELD_WIDTH / 2 - GOAL_WIDTH, -GOAL_HEIGHT / 2),
-        width: GOAL_WIDTH,
-        height: GOAL_HEIGHT,
+        rect: new Rect(
+          new Vector2(-FIELD_WIDTH / 2 - GOAL_WIDTH, -GOAL_HEIGHT / 2),
+          new Vector2(GOAL_WIDTH, GOAL_HEIGHT)
+        ),
       },
       {
         team: "blue",
-        position: new Vector2(FIELD_WIDTH / 2, -GOAL_HEIGHT / 2),
-        width: GOAL_WIDTH,
-        height: GOAL_HEIGHT,
+        rect: new Rect(
+          new Vector2(FIELD_WIDTH / 2, -GOAL_HEIGHT / 2),
+          new Vector2(GOAL_WIDTH, GOAL_HEIGHT)
+        ),
       },
     ],
     players: [

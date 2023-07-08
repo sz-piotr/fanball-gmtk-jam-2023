@@ -1,4 +1,4 @@
-import { Vector2 } from "../Vector2";
+import { Vector2 } from "../math/Vector2";
 import { Input } from "./input/inputSystem";
 import { Ball, Player, World } from "./world";
 
@@ -17,6 +17,12 @@ export function updateWorld(world: World, input: Input, deltaTime: number) {
 
     for (const other of world.players) {
       pushAway(player, other, 5);
+    }
+  }
+
+  for (const goal of world.goals) {
+    if (goal.rect.contains(world.ball.position)) {
+      reset(world);
     }
   }
 }
@@ -87,6 +93,7 @@ function pushAway(player: Player, other: Player, strength: number) {
 
 function reset(world: World) {
   world.ball.position.set(0, 0);
+  world.ball.owner = undefined;
   for (const player of world.players) {
     player.position.set(player.defensivePosition);
   }
