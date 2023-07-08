@@ -17,7 +17,6 @@ export interface Player {
   position: Vector2;
   defensivePosition: Vector2;
   offensivePosition: Vector2;
-  hasBall: boolean;
   speed: number;
   baseSpeed: number;
   control: number;

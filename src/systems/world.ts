@@ -103,7 +103,6 @@ function makePlayer(options: {
   return {
     team: options.team,
     isGoalkeeper: !!options.isGoalkeeper,
-    hasBall: false,
     speed: 20,
     baseSpeed: 20,
     control: 10,

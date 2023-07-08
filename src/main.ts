@@ -1,7 +1,7 @@
 import { initInput, updateInput } from "./systems/input/inputSystem";
 import { initStats, updateStatsBegin, updateStatsEnd } from "./systems/stats";
 import { initTime, updateTime } from "./systems/time/timeSystem";
-import { updateWorld } from "./systems/update";
+import { updateWorld } from "./systems/update/update";
 import { initWorld } from "./systems/world";
 import { render } from "./systems/render";
 
