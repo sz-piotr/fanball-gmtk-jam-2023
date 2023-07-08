@@ -13,7 +13,9 @@ export function updateWorld(world: World, input: Input, deltaTime: number) {
       }
     } else {
       moveWithBall(player, deltaTime, world.ball);
+
       shootBall(player, world.ball, world.goals);
+      passBall(player, world);
     }
 
     for (const other of world.players) {
@@ -45,6 +47,9 @@ function moveWithBall(player: Player, deltaTime: number, ball: Ball) {
 }
 
 function shootBall(player: Player, ball: Ball, goals: Goal[]) {
+  if (!ball.velocity.isZero()) {
+    return;
+  }
   const targetGoal = goals.find((x) => x.team !== player.team);
   if (!targetGoal) {
     return;
@@ -56,8 +61,40 @@ function shootBall(player: Player, ball: Ball, goals: Goal[]) {
       .clone()
       .sub(ball.position)
       .normalize()
-      .mul(40);
+      .mul(100);
   }
+}
+
+function passBall(player: Player, world: World) {
+  if (!world.ball.velocity.isZero()) {
+    return;
+  }
+  const targetGoal = world.goals.find((x) => x.team !== player.team);
+  if (!targetGoal) {
+    return;
+  }
+
+  let closest = player;
+  let minDistance = Vector2.distance2(player.position, targetGoal.center);
+  for (const other of world.players) {
+    const distance = Vector2.distance2(other.position, targetGoal.center);
+    if (distance < minDistance && other.team === player.team) {
+      closest = other;
+    }
+  }
+
+  if (closest === player) {
+    return;
+  }
+
+  const speed = (player.team === "red" ? 1 : -1) * player.speed;
+
+  world.ball.velocity = closest.position
+    .clone()
+    .sub(world.ball.position)
+    .normalize()
+    .mul(40)
+    .add(speed, 0);
 }
 
 function moveToPosition(
