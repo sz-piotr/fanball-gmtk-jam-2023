@@ -48,7 +48,7 @@ export function initWorld(): World {
   const COLUMN_WIDTH = (SECTOR_WIDTH * 0.9) / MAX_COLUMNS;
   const COLUMN_OFFSET = (SECTOR_WIDTH - COLUMN_WIDTH * MAX_COLUMNS) / 2;
 
-  for (let sector = 1; sector <= 6; sector++) {
+  for (const sector of [1, 2, 3, 4, 5, 6] as const) {
     for (let row = 5; row >= 0; row--) {
       for (let column = 0; column < 6; column++) {
         fans.push({
@@ -61,6 +61,11 @@ export function initWorld(): World {
               column * COLUMN_WIDTH,
             LAST_ROW_START - row * ROW_HEIGHT
           ),
+          animation: {
+            progress: Math.random(),
+            intensity: 1,
+            position: new Vector2(0, 0),
+          },
         });
       }
     }

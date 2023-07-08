@@ -109,16 +109,16 @@ export function render(world: World) {
 
     ctx.drawImage(
       assets.body,
-      fan.position.x - BODY_IMG_CENTER_X,
-      fan.position.y - BODY_IMG_CENTER_Y,
+      fan.animation.position.x - BODY_IMG_CENTER_X,
+      fan.animation.position.y - BODY_IMG_CENTER_Y,
       BODY_IMG_WIDTH,
       BODY_IMG_HEIGHT
     );
 
     ctx.drawImage(
       assets.hair,
-      fan.position.x - BODY_IMG_CENTER_X,
-      fan.position.y - BODY_IMG_CENTER_Y,
+      fan.animation.position.x - BODY_IMG_CENTER_X,
+      fan.animation.position.y - BODY_IMG_CENTER_Y,
       BODY_IMG_WIDTH,
       BODY_IMG_HEIGHT
     );

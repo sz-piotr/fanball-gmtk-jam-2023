@@ -46,8 +46,13 @@ export interface Player {
 
 export interface Fan {
   id: string;
-  sector: number;
+  sector: 1 | 2 | 3 | 4 | 5 | 6;
   position: Vector2;
+  animation: {
+    progress: number;
+    position: Vector2;
+    intensity: number;
+  };
 }
 
 export interface Ball {

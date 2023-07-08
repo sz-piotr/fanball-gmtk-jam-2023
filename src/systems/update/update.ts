@@ -6,6 +6,7 @@ import { Ball, Goal, Player, World } from "../types";
 import { advanceGameState } from "./advanceGameState";
 import { getIntent } from "./decision";
 import { executeIntent } from "./execution";
+import { updateFanAnimation } from "./updateFanAnimation";
 import { updatePlayerAnimation } from "./updatePlayerAnimation";
 
 export function updateWorld(world: World, input: Input, deltaTime: number) {
@@ -30,6 +31,18 @@ export function updateWorld(world: World, input: Input, deltaTime: number) {
     }
 
     updatePlayerAnimation(player, deltaTime);
+  }
+
+  for (const fan of world.fans) {
+    if (input.isPressed(`sector${fan.sector}`)) {
+      fan.animation.intensity = 4;
+      if (input.isPressed("boo")) {
+        fan.animation.intensity = 0;
+      }
+    } else {
+      fan.animation.intensity = 1;
+    }
+    updateFanAnimation(fan, deltaTime);
   }
 
   world.ball.position.mulAdd(world.ball.velocity, deltaTime);
