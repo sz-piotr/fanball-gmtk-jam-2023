@@ -1,68 +1,93 @@
 import { Vector2 } from "../Vector2";
 import { Input } from "./input/inputSystem";
-import { World } from "./world";
+import { Ball, Player, World } from "./world";
 
 export function updateWorld(world: World, input: Input, deltaTime: number) {
   for (const player of world.players) {
     if (world.ball.owner !== player) {
       if (world.ball.owner === undefined) {
-        const toBall = world.ball.position
-          .clone()
-          .sub(player.position)
-          .normalize()
-          .mul(player.speed * deltaTime);
-        player.position.add(toBall);
-
-        const distance2 = Vector2.distance2(
-          player.position,
-          world.ball.position
-        );
-        const radius2 = player.controlRadius * player.controlRadius;
-        if (distance2 >= radius2) {
-          continue;
-        }
-
-        if (Math.random() < player.control / 100) {
-          world.ball.owner = player;
-        }
+        moveToBall(world.ball, player, deltaTime);
+        captureBall(player, world.ball);
       } else {
-        const targetPosition =
-          world.ball.owner.team === player.team
-            ? player.offensivePosition
-            : player.defensivePosition;
-        const offset = targetPosition
-          .clone()
-          .sub(player.position)
-          .normalize()
-          .mul(player.speed * deltaTime);
-        player.position.add(offset);
+        moveToPosition(world.ball.owner.team, player, deltaTime);
       }
     } else {
-      const direction = player.team === "red" ? 1 : -1;
-      player.position.add(player.speed * 0.7 * deltaTime * direction, 0);
-      world.ball.position
-        .set(player.position)
-        .add((player.controlRadius / 2) * direction, 0);
+      moveWithBall(player, deltaTime, world.ball);
     }
 
     for (const other of world.players) {
-      if (player === other) {
-        continue;
-      }
-
-      const distance2 = Vector2.distance2(player.position, other.position);
-      const radius2 = player.controlRadius * player.controlRadius;
-      if (distance2 >= radius2) {
-        continue;
-      }
-
-      const push = other.position
-        .clone()
-        .sub(player.position)
-        .normalize()
-        .mul(((radius2 - distance2) / radius2) * 0.3);
-
-      other.position.add(push);
+      pushAway(player, other, 5);
     }
+  }
+}
+
+function moveWithBall(player: Player, deltaTime: number, ball: Ball) {
+  const direction = player.team === "red" ? 1 : -1;
+  player.position.add(player.speed * 0.7 * deltaTime * direction, 0);
+  ball.position
+    .set(player.position)
+    .add((player.controlRadius / 2) * direction, 0);
+}
+
+function moveToPosition(
+  ballTeam: "red" | "blue",
+  player: Player,
+  deltaTime: number
+) {
+  const targetPosition =
+    ballTeam === player.team
+      ? player.offensivePosition
+      : player.defensivePosition;
+  const offset = targetPosition
+    .clone()
+    .sub(player.position)
+    .normalize()
+    .mul(player.speed * deltaTime);
+  player.position.add(offset);
+}
+
+function captureBall(player: Player, ball: Ball) {
+  const distance2 = Vector2.distance2(player.position, ball.position);
+  const radius2 = player.controlRadius * player.controlRadius;
+  if (distance2 >= radius2) {
+    return;
+  }
+  if (Math.random() < player.control / 100) {
+    ball.owner = player;
+  }
+}
+
+function moveToBall(ball: Ball, player: Player, deltaTime: number) {
+  const toBall = ball.position
+    .clone()
+    .sub(player.position)
+    .normalize()
+    .mul(player.speed * deltaTime);
+  player.position.add(toBall);
+}
+
+function pushAway(player: Player, other: Player, strength: number) {
+  if (player === other) {
+    return;
+  }
+  const distance2 = Vector2.distance2(player.position, other.position);
+  const radius2 = player.controlRadius * player.controlRadius;
+  if (distance2 >= radius2) {
+    return;
+  }
+
+  const push = other.position
+    .clone()
+    .sub(player.position)
+    .normalize()
+    .mul(((radius2 - distance2) / radius2) * strength);
+
+  other.position.add(push);
+}
+
+function reset(world: World) {
+  world.ball.position.set(0, 0);
+  for (const player of world.players) {
+    player.position.set(player.defensivePosition);
   }
 }

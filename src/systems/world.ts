@@ -1,20 +1,20 @@
 import { Vector2 } from "../Vector2";
 import { IS_DEVELOPMENT } from "../config";
 
-interface Field {
+export interface Field {
   position: Vector2;
   width: number;
   height: number;
 }
 
-interface Goal {
+export interface Goal {
   team: "red" | "blue";
   position: Vector2;
   width: number;
   height: number;
 }
 
-interface Player {
+export interface Player {
   team: "red" | "blue";
   isGoalkeeper: boolean;
   position: Vector2;
@@ -28,7 +28,7 @@ interface Player {
   controlRadius: number;
 }
 
-interface Ball {
+export interface Ball {
   position: Vector2;
   owner?: Player;
 }
