@@ -92,6 +92,11 @@ export class Vector2 {
 
   normalize() {
     const length = this.length();
+    if (length === 0) {
+      this.x = 0;
+      this.y = 0;
+      return this;
+    }
     this.x /= length;
     this.y /= length;
     return this;

@@ -5,25 +5,44 @@ import { World } from "./world";
 export function updateWorld(world: World, input: Input, deltaTime: number) {
   for (const player of world.players) {
     if (world.ball.owner !== player) {
-      const toBall = world.ball.position
-        .clone()
-        .sub(player.position)
-        .normalize()
-        .mul(player.speed * deltaTime);
-      player.position.add(toBall);
+      if (world.ball.owner === undefined) {
+        const toBall = world.ball.position
+          .clone()
+          .sub(player.position)
+          .normalize()
+          .mul(player.speed * deltaTime);
+        player.position.add(toBall);
 
-      const distance2 = Vector2.distance2(player.position, world.ball.position);
-      const radius2 = player.controlRadius * player.controlRadius;
-      if (distance2 >= radius2) {
-        continue;
-      }
+        const distance2 = Vector2.distance2(
+          player.position,
+          world.ball.position
+        );
+        const radius2 = player.controlRadius * player.controlRadius;
+        if (distance2 >= radius2) {
+          continue;
+        }
 
-      if (Math.random() < player.control / 100) {
-        world.ball.owner = player;
+        if (Math.random() < player.control / 100) {
+          world.ball.owner = player;
+        }
+      } else {
+        const targetPosition =
+          world.ball.owner.team === player.team
+            ? player.offensivePosition
+            : player.defensivePosition;
+        const offset = targetPosition
+          .clone()
+          .sub(player.position)
+          .normalize()
+          .mul(player.speed * deltaTime);
+        player.position.add(offset);
       }
     } else {
-      player.position.add(player.speed * 0.7 * deltaTime, 0);
-      world.ball.position.set(player.position).add(player.controlRadius / 2, 0);
+      const direction = player.team === "red" ? 1 : -1;
+      player.position.add(player.speed * 0.7 * deltaTime * direction, 0);
+      world.ball.position
+        .set(player.position)
+        .add((player.controlRadius / 2) * direction, 0);
     }
 
     for (const other of world.players) {
