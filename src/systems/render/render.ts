@@ -95,6 +95,11 @@ export function render(world: World) {
 
     ctx.setTransform(1, 0, 0, 1, 0, 0);
   }
+
+  for (const fan of world.fans) {
+    ctx.fillStyle = `#0000${(fan.sector * 2).toString(16)}0`;
+    ctx.fillRect(fan.position.x - 7, fan.position.y - 20, 14, 20);
+  }
 }
 
 function drawRotatedImage(

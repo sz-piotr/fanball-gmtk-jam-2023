@@ -1,7 +1,7 @@
 import { Vector2 } from "../math/Vector2";
 import { IS_DEVELOPMENT } from "../config";
 import { Rect } from "../math/Rect";
-import { World, Player } from "./types";
+import { World, Player, Fan } from "./types";
 import { randomChoice } from "../utils/random";
 import { assert } from "../utils/assert";
 import { v4 as uuid } from "uuid";
@@ -38,6 +38,33 @@ export function initWorld(): World {
     players.filter((p) => p.team === startingTeam && p.canStart)
   );
   assert(startingPlayer, "No starting player");
+
+  const fans: Fan[] = [];
+  const SECTOR_WIDTH = 130;
+  const FIRST_SECTOR_OFFSET = 19;
+  const LAST_ROW_START = 252;
+  const ROW_HEIGHT = 23;
+  const MAX_COLUMNS = 6;
+  const COLUMN_WIDTH = (SECTOR_WIDTH * 0.9) / MAX_COLUMNS;
+  const COLUMN_OFFSET = (SECTOR_WIDTH - COLUMN_WIDTH * MAX_COLUMNS) / 2;
+
+  for (let sector = 1; sector <= 6; sector++) {
+    for (let row = 5; row >= 0; row--) {
+      for (let column = 0; column < 6; column++) {
+        fans.push({
+          id: uuid(),
+          sector,
+          position: new Vector2(
+            FIRST_SECTOR_OFFSET +
+              (sector - 1) * SECTOR_WIDTH +
+              COLUMN_OFFSET +
+              column * COLUMN_WIDTH,
+            LAST_ROW_START - row * ROW_HEIGHT
+          ),
+        });
+      }
+    }
+  }
 
   return {
     canvas,
@@ -77,6 +104,7 @@ export function initWorld(): World {
       },
     ],
     players,
+    fans,
   };
 }
 

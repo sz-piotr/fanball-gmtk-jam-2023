@@ -44,6 +44,12 @@ export interface Player {
   baseAccuracy: number;
 }
 
+export interface Fan {
+  id: string;
+  sector: number;
+  position: Vector2;
+}
+
 export interface Ball {
   position: Vector2;
   velocity: Vector2;
@@ -59,4 +65,5 @@ export interface World {
   field: Field;
   goals: Goal[];
   players: Player[];
+  fans: Fan[];
 }
