@@ -1,5 +1,6 @@
 import { Vector2 } from "../math/Vector2";
 import { Rect } from "../math/Rect";
+import { GameState } from "./update/states";
 
 export interface Field {
   rect: Rect;
@@ -14,6 +15,7 @@ export interface Goal {
 export interface Player {
   team: "red" | "blue";
   isGoalkeeper: boolean;
+  canStart: boolean;
   position: Vector2;
   defensivePosition: Vector2;
   offensivePosition: Vector2;
@@ -30,13 +32,13 @@ export interface Ball {
   position: Vector2;
   velocity: Vector2;
   owner?: Player;
-  teamControl: "red" | "blue";
+  lastTouchedBy: "red" | "blue";
 }
 
 export interface World {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
-  isStarting: boolean;
+  gameState: GameState;
   ball: Ball;
   field: Field;
   goals: Goal[];

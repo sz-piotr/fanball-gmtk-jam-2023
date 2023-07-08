@@ -2,6 +2,8 @@ import { Vector2 } from "../math/Vector2";
 import { IS_DEVELOPMENT } from "../config";
 import { Rect } from "../math/Rect";
 import { World, Player } from "./types";
+import { randomChoice } from "../utils/random";
+import { assert } from "../utils/assert";
 
 const FIELD_WIDTH = 200;
 const FIELD_HEIGHT = 100;
@@ -13,15 +15,41 @@ const SCREEN_HEIGHT = 600;
 
 export function initWorld(): World {
   const { canvas, ctx } = initCanvas();
+  const players = [
+    ...makePlayers({
+      isGoalkeeper: true,
+      defensive: new Vector2(0.45, 0),
+      offensive: new Vector2(0.4, 0),
+    }),
+    ...makePlayers({
+      defensive: new Vector2(0.35, 0.25),
+      offensive: new Vector2(-0.1, 0.25),
+    }),
+    ...makePlayers({
+      canStart: true,
+      defensive: new Vector2(0.1, 0.35),
+      offensive: new Vector2(-0.35, 0.15),
+    }),
+  ];
+
+  const startingTeam = Math.random() < 0.5 ? "red" : "blue";
+  const startingPlayer = randomChoice(
+    players.filter((p) => p.team === startingTeam && p.canStart)
+  );
+  assert(startingPlayer, "No starting player");
 
   return {
     canvas,
     ctx,
-    isStarting: true,
+    gameState: {
+      type: "Starting",
+      startingPlayer: startingPlayer,
+      timeRemaining: Infinity,
+    },
     ball: {
       position: new Vector2(0, 0),
       velocity: new Vector2(0, 0),
-      teamControl: "red",
+      lastTouchedBy: "red",
     },
     field: {
       rect: new Rect(
@@ -47,21 +75,7 @@ export function initWorld(): World {
         center: new Vector2(FIELD_WIDTH / 2, 0),
       },
     ],
-    players: [
-      ...makePlayers({
-        isGoalkeeper: true,
-        defensive: new Vector2(0.45, 0),
-        offensive: new Vector2(0.4, 0),
-      }),
-      ...makePlayers({
-        defensive: new Vector2(0.35, 0.25),
-        offensive: new Vector2(-0.1, 0.25),
-      }),
-      ...makePlayers({
-        defensive: new Vector2(0.1, 0.35),
-        offensive: new Vector2(-0.35, 0.15),
-      }),
-    ],
+    players,
   };
 }
 
@@ -96,6 +110,7 @@ function makePlayers(options: Omit<Parameters<typeof makePlayer>[0], "team">) {
 
 function makePlayer(options: {
   team: "red" | "blue";
+  canStart?: boolean;
   isGoalkeeper?: boolean;
   defensive: Vector2;
   offensive: Vector2;
@@ -103,13 +118,14 @@ function makePlayer(options: {
   return {
     team: options.team,
     isGoalkeeper: !!options.isGoalkeeper,
+    canStart: !!options.canStart,
     speed: 20,
     baseSpeed: 20,
     control: 10,
     baseControl: 10,
     controlRadius: 10,
-    accuracy: 100,
-    baseAccuracy: 100,
+    accuracy: 50,
+    baseAccuracy: 50,
     position: options.defensive.clone().mul(FIELD_WIDTH, FIELD_HEIGHT),
     defensivePosition: options.defensive.clone().mul(FIELD_WIDTH, FIELD_HEIGHT),
     offensivePosition: options.offensive.clone().mul(FIELD_WIDTH, FIELD_HEIGHT),

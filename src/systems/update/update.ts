@@ -1,39 +1,27 @@
 import { Vector2 } from "../../math/Vector2";
+import { assert } from "../../utils/assert";
+import { randomChoice } from "../../utils/random";
 import { Input } from "../input/inputSystem";
 import { Ball, Goal, Player, World } from "../types";
+import { advanceGameState } from "./advanceGameState";
 import { getIntent } from "./decision";
 import { executeIntent } from "./execution";
 
 export function updateWorld(world: World, input: Input, deltaTime: number) {
-  if (world.isStarting) {
-    let nearestPlayer: Player | undefined;
-    let minDistance = Infinity;
-    for (const player of world.players) {
-      if (player.team === world.ball.teamControl) {
-        const distance = Vector2.distance2(
-          player.position,
-          world.ball.position
-        );
-        if (distance < minDistance) {
-          nearestPlayer = player;
-          minDistance = distance;
-        }
-      }
-    }
-    nearestPlayer?.position.set(0, 0);
-    world.ball.owner = nearestPlayer;
-  }
+  advanceGameState(world, deltaTime);
 
   for (const player of world.players) {
     const intent = getIntent(player, world);
     executeIntent(intent, player, world, deltaTime);
 
-    if (world.ball.owner === undefined) {
-      captureBall(player, world.ball);
-    }
+    if (world.gameState.type === "Playing") {
+      if (world.ball.owner === undefined) {
+        captureBall(player, world.ball);
+      }
 
-    if (world.ball.owner === player) {
-      pushBall(player, deltaTime, world.ball);
+      if (world.ball.owner === player) {
+        pushBall(player, deltaTime, world.ball);
+      }
     }
 
     for (const other of world.players) {
@@ -41,14 +29,72 @@ export function updateWorld(world: World, input: Input, deltaTime: number) {
     }
   }
 
-  world.isStarting = false;
-
   world.ball.position.mulAdd(world.ball.velocity, deltaTime);
 
   for (const goal of world.goals) {
     if (goal.rect.contains(world.ball.position)) {
-      world.ball.teamControl = goal.team;
-      reset(world);
+      afterGoal(world, goal.team);
+    }
+  }
+
+  const BALL_ACCELERATION = 0.99;
+  world.ball.velocity.mul(BALL_ACCELERATION);
+
+  if (!world.ball.velocity.isZero()) {
+    if (!world.field.rect.contains(world.ball.position)) {
+      let isGoalkeeper = false;
+      if (
+        world.ball.position.x < world.field.rect.position.x ||
+        world.ball.position.x >
+          world.field.rect.position.x + world.field.rect.size.x
+      ) {
+        // TODO: handle corner
+        isGoalkeeper = true;
+      }
+
+      world.ball.position.clamp(
+        world.field.rect.position,
+        world.field.rect.position.clone().add(world.field.rect.size)
+      );
+      world.ball.velocity.set(0, 0);
+
+      if (world.gameState.type === "Playing") {
+        if (isGoalkeeper) {
+          const startingPlayer = world.players.find(
+            (p) => p.team !== world.ball.lastTouchedBy && p.isGoalkeeper
+          );
+
+          assert(startingPlayer, "Missing starting player!");
+          world.ball.position.set(startingPlayer.offensivePosition);
+          world.gameState = {
+            type: "GoalkeeperKick",
+            startingPlayer,
+            timeRemaining: Infinity,
+          };
+        } else {
+          let startingPlayer: Player | undefined;
+          let minDistance = Infinity;
+          for (const player of world.players) {
+            if (player.team !== world.ball.lastTouchedBy) {
+              const distance = Vector2.distance2(
+                world.ball.position,
+                player.position
+              );
+              if (distance < minDistance) {
+                minDistance = distance;
+                startingPlayer = player;
+              }
+            }
+          }
+
+          assert(startingPlayer, "Missing starting player!");
+          world.gameState = {
+            type: "OutKick",
+            startingPlayer,
+            timeRemaining: Infinity,
+          };
+        }
+      }
     }
   }
 }
@@ -70,11 +116,11 @@ function captureBall(player: Player, ball: Ball) {
   if (!isNearPlayer(player, ball.position)) {
     return;
   }
-  const controlModifier = player.team === ball.teamControl ? 2 : 0.3;
+  const controlModifier = player.team === ball.lastTouchedBy ? 2 : 0.3;
   if (Math.random() < (player.control * controlModifier) / 100) {
     ball.owner = player;
     ball.velocity.set(0, 0);
-    ball.teamControl = player.team;
+    ball.lastTouchedBy = player.team;
   }
 }
 
@@ -103,14 +149,19 @@ function pushAway(player: Player, other: Player, strength: number) {
   other.position.add(push);
 }
 
-function reset(world: World) {
-  world.isStarting = true;
+function afterGoal(world: World, startingTeam: "red" | "blue") {
+  const startingPlayer = randomChoice(
+    world.players.filter((p) => p.team === startingTeam && p.canStart)
+  );
+  assert(startingPlayer, "No starting player");
+
+  world.gameState = {
+    type: "Starting",
+    startingPlayer,
+    timeRemaining: Infinity,
+  };
 
   world.ball.position.set(0, 0);
   world.ball.velocity.set(0, 0);
   world.ball.owner = undefined;
-
-  for (const player of world.players) {
-    player.position.set(player.defensivePosition);
-  }
 }

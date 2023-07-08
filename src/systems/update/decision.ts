@@ -37,6 +37,24 @@ function getOffensiveMoveIntent(player: Player, world: World) {
     target: player.offensivePosition,
     score: 0,
   };
+
+  if (
+    world.gameState.type === "OutKick" ||
+    world.gameState.type === "GoalkeeperKick"
+  ) {
+    if (player.team === world.gameState.startingPlayer.team) {
+      intent.score += 50;
+    } else {
+      intent.score -= 50;
+    }
+    return intent;
+  }
+
+  if (world.gameState.type === "Starting") {
+    intent.score -= 100;
+    return intent;
+  }
+
   if (world.ball.owner?.team === player.team) {
     intent.score += 10;
   } else {
@@ -54,6 +72,24 @@ function getDefensiveMoveIntent(player: Player, world: World) {
     target: player.defensivePosition,
     score: 0,
   };
+
+  if (world.gameState.type === "Starting") {
+    intent.score += 50;
+    return intent;
+  }
+
+  if (
+    world.gameState.type === "OutKick" ||
+    world.gameState.type === "GoalkeeperKick"
+  ) {
+    if (player.team === world.gameState.startingPlayer.team) {
+      intent.score -= 50;
+    } else {
+      intent.score += 50;
+    }
+    return intent;
+  }
+
   if (world.ball.owner?.team !== player.team) {
     intent.score += 10;
   } else {
@@ -62,6 +98,7 @@ function getDefensiveMoveIntent(player: Player, world: World) {
   if (world.ball.owner === player) {
     intent.score -= 20;
   }
+
   return intent;
 }
 
@@ -71,6 +108,19 @@ function getChaseBallIntent(player: Player, world: World) {
     target: world.ball.position,
     score: 0,
   };
+
+  if (
+    world.gameState.type !== "Playing" &&
+    world.gameState.startingPlayer === player
+  ) {
+    intent.score += 100;
+    return intent;
+  }
+
+  if (world.gameState.type !== "Playing") {
+    intent.score -= 100;
+    return intent;
+  }
 
   if (world.ball.owner !== undefined) {
     intent.score -= 20;
@@ -92,6 +142,11 @@ function getAttackIntent(player: Player, world: World) {
     target: targetGoal.center,
     score: 0,
   };
+
+  if (world.gameState.type !== "Playing") {
+    intent.score -= 100;
+    return intent;
+  }
 
   if (world.ball.owner !== player) {
     intent.score -= 50;
@@ -118,7 +173,15 @@ function getPassIntent(player: Player, world: World) {
     return intent;
   }
 
-  if (world.isStarting) {
+  if (!world.ball.velocity.isZero()) {
+    intent.score -= 50;
+    return intent;
+  }
+
+  if (
+    world.gameState.type === "Playing" &&
+    world.gameState.startingPlayer === player
+  ) {
     const closest = findClosestTeamMemberTo(player, world, player.position);
     intent.target = closest.position;
     intent.score += 100;
@@ -146,6 +209,11 @@ function getShootIntent(player: Player, world: World) {
     target: targetGoal.center,
     score: 0,
   };
+
+  if (world.gameState.type !== "Playing") {
+    intent.score -= 100;
+    return intent;
+  }
 
   if (world.ball.owner !== player) {
     intent.score -= 50;

@@ -1,3 +1,5 @@
+import { clamp } from "../utils/clamp";
+
 export interface Vector2Like {
   x: number;
   y: number;
@@ -12,6 +14,16 @@ export class Vector2 {
 
   isZero() {
     return this.x === 0 && this.y === 0;
+  }
+
+  equals(vector: Vector2Like): boolean;
+  equals(x: number, y: number): boolean;
+  equals(a: Vector2Like | number, b?: number) {
+    if (typeof a === "number") {
+      return this.x === a && (this.y === b ?? a);
+    } else {
+      return this.x === a.x && this.y === a.y;
+    }
   }
 
   set(vector: Vector2Like): this;
@@ -110,6 +122,20 @@ export class Vector2 {
     this.x /= length;
     this.y /= length;
     return this;
+  }
+
+  clamp(min: Vector2, max: Vector2) {
+    this.clampX(min.x, max.x);
+    this.clampY(min.y, max.y);
+    return this;
+  }
+
+  clampX(min: number, max: number) {
+    this.x = clamp(this.x, min, max);
+  }
+
+  clampY(min: number, max: number) {
+    this.y = clamp(this.y, min, max);
   }
 
   static distance(a: Vector2Like, b: Vector2Like) {

@@ -49,17 +49,22 @@ function executeMoveIntent(
 
 function executePassIntent(intent: PassIntent, player: Player, world: World) {
   const PASS_SPEED = 40;
+  const GOALKEEPER_PASS_SPEED = 80;
 
   let movementSpeed = (player.team === "red" ? 1 : -1) * player.speed;
-  if (world.isStarting) {
+  if (
+    world.gameState.type === "Playing" &&
+    world.gameState.startingPlayer === player
+  ) {
     movementSpeed = 0;
+    world.gameState.startingPlayer = undefined;
   }
 
   world.ball.velocity = intent.target
     .clone()
     .sub(world.ball.position)
     .normalize()
-    .mul(PASS_SPEED)
+    .mul(player.isGoalkeeper ? GOALKEEPER_PASS_SPEED : PASS_SPEED)
     .add(movementSpeed, 0)
     .rotate(getShotAngle(player));
 }
