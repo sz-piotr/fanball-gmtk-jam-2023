@@ -1,43 +1,7 @@
 import { Vector2 } from "../math/Vector2";
 import { IS_DEVELOPMENT } from "../config";
 import { Rect } from "../math/Rect";
-
-export interface Field {
-  rect: Rect;
-}
-
-export interface Goal {
-  team: "red" | "blue";
-  rect: Rect;
-}
-
-export interface Player {
-  team: "red" | "blue";
-  isGoalkeeper: boolean;
-  position: Vector2;
-  defensivePosition: Vector2;
-  offensivePosition: Vector2;
-  hasBall: boolean;
-  speed: number;
-  baseSpeed: number;
-  control: number;
-  baseControl: number;
-  controlRadius: number;
-}
-
-export interface Ball {
-  position: Vector2;
-  owner?: Player;
-}
-
-export interface World {
-  canvas: HTMLCanvasElement;
-  ctx: CanvasRenderingContext2D;
-  ball: Ball;
-  field: Field;
-  goals: Goal[];
-  players: Player[];
-}
+import { World, Player } from "./types";
 
 const FIELD_WIDTH = 200;
 const FIELD_HEIGHT = 100;
@@ -55,6 +19,7 @@ export function initWorld(): World {
     ctx,
     ball: {
       position: new Vector2(0, 0),
+      velocity: new Vector2(0, 0),
     },
     field: {
       rect: new Rect(
@@ -69,6 +34,7 @@ export function initWorld(): World {
           new Vector2(-FIELD_WIDTH / 2 - GOAL_WIDTH, -GOAL_HEIGHT / 2),
           new Vector2(GOAL_WIDTH, GOAL_HEIGHT)
         ),
+        center: new Vector2(-FIELD_WIDTH / 2, 0),
       },
       {
         team: "blue",
@@ -76,6 +42,7 @@ export function initWorld(): World {
           new Vector2(FIELD_WIDTH / 2, -GOAL_HEIGHT / 2),
           new Vector2(GOAL_WIDTH, GOAL_HEIGHT)
         ),
+        center: new Vector2(FIELD_WIDTH / 2, 0),
       },
     ],
     players: [

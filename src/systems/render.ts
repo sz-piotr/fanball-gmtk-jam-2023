@@ -1,4 +1,4 @@
-import { World } from "./world";
+import { World } from "./types";
 
 export function render(world: World) {
   const { ctx } = world;

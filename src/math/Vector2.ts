@@ -10,6 +10,10 @@ export class Vector2 {
     return new Vector2(this.x, this.y);
   }
 
+  isZero() {
+    return this.x === 0 && this.y === 0;
+  }
+
   set(vector: Vector2Like): this;
   set(scalar: number): this;
   set(x: number, y: number): this;
@@ -77,6 +81,12 @@ export class Vector2 {
       this.x /= a.x;
       this.y /= a.y;
     }
+    return this;
+  }
+
+  mulAdd(vector: Vector2Like, scalar: number) {
+    this.x += vector.x * scalar;
+    this.y += vector.y * scalar;
     return this;
   }
 
