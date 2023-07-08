@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@types/stats.js": "^0.17.0",
+    "mini-svg-data-uri": "^1.4.4",
     "stats.js": "^0.17.0"
   },
   "devDependencies": {

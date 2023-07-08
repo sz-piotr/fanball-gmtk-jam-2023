@@ -1,5 +1,27 @@
 import { World } from "./types";
 
+import armSvg from "../images/arm.svg?raw";
+import bodySvg from "../images/body.svg?raw";
+import hairSvg from "../images/hair.svg?raw";
+import legBentSvg from "../images/legBent.svg?raw";
+import legStraightSvg from "../images/legStraight.svg?raw";
+import svgToMiniDataURI from "mini-svg-data-uri";
+
+const armImg = document.createElement("img");
+armImg.src = svgToMiniDataURI(armSvg);
+
+const bodyImg = document.createElement("img");
+bodyImg.src = svgToMiniDataURI(bodySvg);
+
+const hairImg = document.createElement("img");
+hairImg.src = svgToMiniDataURI(hairSvg);
+
+const legBentImg = document.createElement("img");
+legBentImg.src = svgToMiniDataURI(legBentSvg);
+
+const legStraightImg = document.createElement("img");
+legStraightImg.src = svgToMiniDataURI(legStraightSvg);
+
 export function render(world: World) {
   const { ctx } = world;
   const { width, height } = world.canvas;
@@ -61,15 +83,33 @@ export function render(world: World) {
   }
 
   for (const player of world.players) {
-    ctx.fillStyle = player.team;
-    if (player.isGoalkeeper) {
-      ctx.fillStyle = "dark" + player.team;
-    }
     const position = toScreenSpace(player.position);
-    ctx.fillRect(position.x - 10, position.y - 20, 20, 20);
     ctx.fillStyle = "black";
     ctx.beginPath();
     ctx.arc(position.x, position.y, 3, 0, 2 * Math.PI);
     ctx.fill();
+
+    const IMAGE_SCALE = 0.3;
+
+    const BODY_IMG_WIDTH = 100 * IMAGE_SCALE;
+    const BODY_IMG_HEIGHT = 200 * IMAGE_SCALE;
+    const BODY_IMG_CENTER_X = 50 * IMAGE_SCALE;
+    const BODY_IMG_CENTER_Y = 200 * IMAGE_SCALE;
+
+    const topX = position.x - BODY_IMG_CENTER_X;
+    const topY = position.y - BODY_IMG_CENTER_Y;
+
+    if (player.team === "red") {
+      ctx.translate(topX + BODY_IMG_WIDTH, topY);
+      ctx.scale(-1, 1);
+    } else {
+      ctx.translate(topX, topY);
+    }
+
+    ctx.drawImage(legStraightImg, 0, 0, BODY_IMG_WIDTH, BODY_IMG_HEIGHT);
+    ctx.drawImage(legBentImg, 0, 0, BODY_IMG_WIDTH, BODY_IMG_HEIGHT);
+    ctx.drawImage(bodyImg, 0, 0, BODY_IMG_WIDTH, BODY_IMG_HEIGHT);
+
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
   }
 }
