@@ -7,7 +7,7 @@ import { assert } from "../utils/assert";
 import { v4 as uuid } from "uuid";
 
 const FIELD_WIDTH = 200;
-const FIELD_HEIGHT = 100;
+const FIELD_HEIGHT = 120;
 const GOAL_WIDTH = 20;
 const GOAL_HEIGHT = 30;
 
