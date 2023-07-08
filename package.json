@@ -1,5 +1,5 @@
 {
-  "name": "dungeons-3d",
+  "name": "fanball",
   "private": true,
   "scripts": {
     "dev": "vite",
