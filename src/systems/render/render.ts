@@ -1,4 +1,4 @@
-import { getAssets } from "./getAssets";
+import { getFanAssets, getPlayerAssets } from "./getAssets";
 
 import backgroundUrl from "../../images/background.png";
 import { World } from "../types";
@@ -45,7 +45,7 @@ export function render(world: World) {
   for (const player of world.players) {
     const position = toScreenSpace(player.position);
 
-    const assets = getAssets(player);
+    const assets = getPlayerAssets(player);
 
     const leftLegRotation = player.animation.leftLeg.rotation;
     const rightLegRotation = player.animation.rightLeg.rotation;
@@ -92,13 +92,36 @@ export function render(world: World) {
       rightLegRotation
     );
     ctx.drawImage(assets.body, 0, 0, BODY_IMG_WIDTH, BODY_IMG_HEIGHT);
+    ctx.drawImage(assets.hair, 0, 0, BODY_IMG_WIDTH, BODY_IMG_HEIGHT);
 
     ctx.setTransform(1, 0, 0, 1, 0, 0);
   }
 
   for (const fan of world.fans) {
-    ctx.fillStyle = `#0000${(fan.sector * 2).toString(16)}0`;
-    ctx.fillRect(fan.position.x - 7, fan.position.y - 20, 14, 20);
+    const assets = getFanAssets(fan);
+
+    const IMAGE_SCALE = 0.4;
+
+    const BODY_IMG_WIDTH = 100 * IMAGE_SCALE;
+    const BODY_IMG_HEIGHT = 200 * IMAGE_SCALE;
+    const BODY_IMG_CENTER_X = 50 * IMAGE_SCALE;
+    const BODY_IMG_CENTER_Y = 134 * IMAGE_SCALE;
+
+    ctx.drawImage(
+      assets.body,
+      fan.position.x - BODY_IMG_CENTER_X,
+      fan.position.y - BODY_IMG_CENTER_Y,
+      BODY_IMG_WIDTH,
+      BODY_IMG_HEIGHT
+    );
+
+    ctx.drawImage(
+      assets.hair,
+      fan.position.x - BODY_IMG_CENTER_X,
+      fan.position.y - BODY_IMG_CENTER_Y,
+      BODY_IMG_WIDTH,
+      BODY_IMG_HEIGHT
+    );
   }
 }
 
