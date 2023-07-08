@@ -16,7 +16,10 @@ export class Timer {
     this.lastTimeMs = now;
 
     this.accumulator += deltaTime;
-    const steps = Math.floor(this.accumulator / this.fixedTimeStepMs);
+    let steps = Math.floor(this.accumulator / this.fixedTimeStepMs);
+    if (steps === 0 && this.accumulator > -3 * this.fixedTimeStepMs) {
+      steps = 1;
+    }
     this.accumulator -= steps * this.fixedTimeStepMs;
 
     return {

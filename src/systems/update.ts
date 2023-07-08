@@ -118,9 +118,11 @@ function captureBall(player: Player, ball: Ball) {
   if (!isNearPlayer(player, ball.position)) {
     return;
   }
-  if (Math.random() < player.control / 100) {
+  const controlModifier = player.team === ball.teamControl ? 2 : 0.3;
+  if (Math.random() < (player.control * controlModifier) / 100) {
     ball.owner = player;
     ball.velocity.set(0, 0);
+    ball.teamControl = player.team;
   }
 }
 

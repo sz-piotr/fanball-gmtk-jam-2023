@@ -23,9 +23,11 @@ function init() {
 function update(game: ReturnType<typeof init>) {
   updateStatsBegin(game.stats);
 
-  const { deltaTime } = updateTime(game.timer);
+  const { fixedDeltaTime, steps } = updateTime(game.timer);
   updateInput(game.keyboardInput);
-  updateWorld(game.world, game.mappedInput, deltaTime);
+  for (let i = 0; i < steps; i++) {
+    updateWorld(game.world, game.mappedInput, fixedDeltaTime);
+  }
   render(game.world);
 
   updateStatsEnd(game.stats);

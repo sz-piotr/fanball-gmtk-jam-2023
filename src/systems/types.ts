@@ -29,6 +29,7 @@ export interface Ball {
   position: Vector2;
   velocity: Vector2;
   owner?: Player;
+  teamControl: "red" | "blue";
 }
 
 export interface World {
