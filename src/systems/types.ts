@@ -23,6 +23,8 @@ export interface Player {
   control: number;
   baseControl: number;
   controlRadius: number;
+  accuracy: number;
+  baseAccuracy: number;
 }
 
 export interface Ball {
@@ -35,6 +37,7 @@ export interface Ball {
 export interface World {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
+  isStarting: boolean;
   ball: Ball;
   field: Field;
   goals: Goal[];

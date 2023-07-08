@@ -17,6 +17,7 @@ export function initWorld(): World {
   return {
     canvas,
     ctx,
+    isStarting: true,
     ball: {
       position: new Vector2(0, 0),
       velocity: new Vector2(0, 0),
@@ -108,6 +109,8 @@ function makePlayer(options: {
     control: 10,
     baseControl: 10,
     controlRadius: 10,
+    accuracy: 100,
+    baseAccuracy: 100,
     position: options.defensive.clone().mul(FIELD_WIDTH, FIELD_HEIGHT),
     defensivePosition: options.defensive.clone().mul(FIELD_WIDTH, FIELD_HEIGHT),
     offensivePosition: options.offensive.clone().mul(FIELD_WIDTH, FIELD_HEIGHT),

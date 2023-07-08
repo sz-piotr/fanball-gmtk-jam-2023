@@ -3,6 +3,25 @@ import { Input } from "./input/inputSystem";
 import { Ball, Goal, Player, World } from "./types";
 
 export function updateWorld(world: World, input: Input, deltaTime: number) {
+  if (world.isStarting) {
+    let nearestPlayer: Player | undefined;
+    let minDistance = Infinity;
+    for (const player of world.players) {
+      if (player.team === world.ball.teamControl) {
+        const distance = Vector2.distance2(
+          player.position,
+          world.ball.position
+        );
+        if (distance < minDistance) {
+          nearestPlayer = player;
+          minDistance = distance;
+        }
+      }
+    }
+    nearestPlayer?.position.set(0, 0);
+    world.ball.owner = nearestPlayer;
+  }
+
   for (const player of world.players) {
     if (world.ball.owner !== player) {
       if (world.ball.owner === undefined) {
@@ -23,10 +42,13 @@ export function updateWorld(world: World, input: Input, deltaTime: number) {
     }
   }
 
+  world.isStarting = false;
+
   world.ball.position.mulAdd(world.ball.velocity, deltaTime);
 
   for (const goal of world.goals) {
     if (goal.rect.contains(world.ball.position)) {
+      world.ball.teamControl = goal.team;
       reset(world);
     }
   }
@@ -57,11 +79,15 @@ function shootBall(player: Player, ball: Ball, goals: Goal[]) {
 
   const distance2 = Vector2.distance2(ball.position, targetGoal.center);
   if (distance2 < 50 * 50) {
+    const angleSpread = (Math.PI * (100 - player.accuracy)) / 100;
+    const angle = Math.random() * angleSpread - angleSpread / 2;
+
     ball.velocity = targetGoal.center
       .clone()
       .sub(ball.position)
       .normalize()
-      .mul(100);
+      .mul(100)
+      .rotate(angle);
   }
 }
 
@@ -74,27 +100,45 @@ function passBall(player: Player, world: World) {
     return;
   }
 
-  let closest = player;
-  let minDistance = Vector2.distance2(player.position, targetGoal.center);
+  const playerDistance = Vector2.distance2(player.position, targetGoal.center);
+
+  let closest: Player | undefined;
+  let minDistance = Infinity;
   for (const other of world.players) {
     const distance = Vector2.distance2(other.position, targetGoal.center);
-    if (distance < minDistance && other.team === player.team) {
+    if (
+      distance < minDistance &&
+      other.team === player.team &&
+      other !== player
+    ) {
       closest = other;
+      minDistance = distance;
     }
   }
 
-  if (closest === player) {
+  if (closest === undefined) {
     return;
   }
 
-  const speed = (player.team === "red" ? 1 : -1) * player.speed;
+  if (playerDistance < minDistance && !world.isStarting) {
+    return;
+  }
+
+  let speed = (player.team === "red" ? 1 : -1) * player.speed;
+  if (world.isStarting) {
+    speed = 0;
+  }
+
+  const angleSpread = (Math.PI * (100 - player.accuracy)) / 100;
+  const angle = Math.random() * angleSpread - angleSpread / 2;
 
   world.ball.velocity = closest.position
     .clone()
     .sub(world.ball.position)
     .normalize()
     .mul(40)
-    .add(speed, 0);
+    .add(speed, 0)
+    .rotate(angle);
 }
 
 function moveToPosition(
@@ -161,6 +205,8 @@ function pushAway(player: Player, other: Player, strength: number) {
 }
 
 function reset(world: World) {
+  world.isStarting = true;
+
   world.ball.position.set(0, 0);
   world.ball.velocity.set(0, 0);
   world.ball.owner = undefined;
