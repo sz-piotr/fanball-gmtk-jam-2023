@@ -1,11 +1,12 @@
-import { World } from "./types";
+import { World } from "../types";
 
-import armSvg from "../images/arm.svg?raw";
-import bodySvg from "../images/body.svg?raw";
-import hairSvg from "../images/hair.svg?raw";
-import legBentSvg from "../images/legBent.svg?raw";
-import legStraightSvg from "../images/legStraight.svg?raw";
+import armSvg from "../../images/arm.svg?raw";
+import bodySvg from "../../images/body.svg?raw";
+import hairSvg from "../../images/hair.svg?raw";
+import legBentSvg from "../../images/legBent.svg?raw";
+import legStraightSvg from "../../images/legStraight.svg?raw";
 import svgToMiniDataURI from "mini-svg-data-uri";
+import { getAssets } from "./getAssets";
 
 const armImg = document.createElement("img");
 armImg.src = svgToMiniDataURI(armSvg);
@@ -89,6 +90,8 @@ export function render(world: World) {
     ctx.arc(position.x, position.y, 3, 0, 2 * Math.PI);
     ctx.fill();
 
+    const assets = getAssets(player);
+
     const IMAGE_SCALE = 0.3;
 
     const BODY_IMG_WIDTH = 100 * IMAGE_SCALE;
@@ -106,9 +109,9 @@ export function render(world: World) {
       ctx.translate(topX, topY);
     }
 
-    ctx.drawImage(legStraightImg, 0, 0, BODY_IMG_WIDTH, BODY_IMG_HEIGHT);
-    ctx.drawImage(legBentImg, 0, 0, BODY_IMG_WIDTH, BODY_IMG_HEIGHT);
-    ctx.drawImage(bodyImg, 0, 0, BODY_IMG_WIDTH, BODY_IMG_HEIGHT);
+    ctx.drawImage(assets.legStraight, 0, 0, BODY_IMG_WIDTH, BODY_IMG_HEIGHT);
+    ctx.drawImage(assets.legBent, 0, 0, BODY_IMG_WIDTH, BODY_IMG_HEIGHT);
+    ctx.drawImage(assets.body, 0, 0, BODY_IMG_WIDTH, BODY_IMG_HEIGHT);
 
     ctx.setTransform(1, 0, 0, 1, 0, 0);
   }

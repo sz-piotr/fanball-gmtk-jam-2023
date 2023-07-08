@@ -4,6 +4,7 @@ import { Rect } from "../math/Rect";
 import { World, Player } from "./types";
 import { randomChoice } from "../utils/random";
 import { assert } from "../utils/assert";
+import { v4 as uuid } from "uuid";
 
 const FIELD_WIDTH = 200;
 const FIELD_HEIGHT = 100;
@@ -116,6 +117,7 @@ function makePlayer(options: {
   offensive: Vector2;
 }): Player {
   return {
+    id: uuid(),
     team: options.team,
     isGoalkeeper: !!options.isGoalkeeper,
     canStart: !!options.canStart,

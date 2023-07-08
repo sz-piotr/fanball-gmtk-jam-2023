@@ -13,6 +13,7 @@ export interface Goal {
 }
 
 export interface Player {
+  id: string;
   team: "red" | "blue";
   isGoalkeeper: boolean;
   canStart: boolean;

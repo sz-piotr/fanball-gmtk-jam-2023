@@ -3,7 +3,7 @@ import { initStats, updateStatsBegin, updateStatsEnd } from "./systems/stats";
 import { initTime, updateTime } from "./systems/time/timeSystem";
 import { updateWorld } from "./systems/update/update";
 import { initWorld } from "./systems/world";
-import { render } from "./systems/render";
+import { render } from "./systems/render/render";
 
 function init() {
   const stats = initStats();
