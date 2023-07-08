@@ -6,6 +6,7 @@ import { Ball, Goal, Player, World } from "../types";
 import { advanceGameState } from "./advanceGameState";
 import { getIntent } from "./decision";
 import { executeIntent } from "./execution";
+import { updatePlayerAnimation } from "./updatePlayerAnimation";
 
 export function updateWorld(world: World, input: Input, deltaTime: number) {
   advanceGameState(world, deltaTime);
@@ -27,6 +28,8 @@ export function updateWorld(world: World, input: Input, deltaTime: number) {
     for (const other of world.players) {
       pushAway(player, other, 5);
     }
+
+    updatePlayerAnimation(player, deltaTime);
   }
 
   world.ball.position.mulAdd(world.ball.velocity, deltaTime);

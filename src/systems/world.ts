@@ -131,6 +131,21 @@ function makePlayer(options: {
     position: options.defensive.clone().mul(FIELD_WIDTH, FIELD_HEIGHT),
     defensivePosition: options.defensive.clone().mul(FIELD_WIDTH, FIELD_HEIGHT),
     offensivePosition: options.offensive.clone().mul(FIELD_WIDTH, FIELD_HEIGHT),
+    animation: {
+      isStationary: true,
+      lastPosition: new Vector2(0, 0),
+      direction: options.team === "red" ? 1 : -1,
+      leftLeg: {
+        rotation: 0,
+        angularVelocity: 0,
+        isStraight: true,
+      },
+      rightLeg: {
+        rotation: 0,
+        angularVelocity: 0,
+        isStraight: true,
+      },
+    },
   };
 }
 

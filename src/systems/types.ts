@@ -18,6 +18,21 @@ export interface Player {
   isGoalkeeper: boolean;
   canStart: boolean;
   position: Vector2;
+  animation: {
+    isStationary: boolean;
+    lastPosition: Vector2;
+    direction: 1 | -1;
+    leftLeg: {
+      rotation: number;
+      angularVelocity: number;
+      isStraight: boolean;
+    };
+    rightLeg: {
+      rotation: number;
+      angularVelocity: number;
+      isStraight: boolean;
+    };
+  };
   defensivePosition: Vector2;
   offensivePosition: Vector2;
   speed: number;

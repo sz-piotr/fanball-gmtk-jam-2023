@@ -1,27 +1,5 @@
 import { World } from "../types";
-
-import armSvg from "../../images/arm.svg?raw";
-import bodySvg from "../../images/body.svg?raw";
-import hairSvg from "../../images/hair.svg?raw";
-import legBentSvg from "../../images/legBent.svg?raw";
-import legStraightSvg from "../../images/legStraight.svg?raw";
-import svgToMiniDataURI from "mini-svg-data-uri";
 import { getAssets } from "./getAssets";
-
-const armImg = document.createElement("img");
-armImg.src = svgToMiniDataURI(armSvg);
-
-const bodyImg = document.createElement("img");
-bodyImg.src = svgToMiniDataURI(bodySvg);
-
-const hairImg = document.createElement("img");
-hairImg.src = svgToMiniDataURI(hairSvg);
-
-const legBentImg = document.createElement("img");
-legBentImg.src = svgToMiniDataURI(legBentSvg);
-
-const legStraightImg = document.createElement("img");
-legStraightImg.src = svgToMiniDataURI(legStraightSvg);
 
 export function render(world: World) {
   const { ctx } = world;
@@ -92,12 +70,12 @@ export function render(world: World) {
 
     const assets = getAssets(player);
 
-    const leftLegRotation = Math.PI / 4;
-    const rightLegRotation = Math.PI / 4;
-    const leftLegStraight = true;
-    const rightLegStraight = false;
+    const leftLegRotation = player.animation.leftLeg.rotation;
+    const rightLegRotation = player.animation.rightLeg.rotation;
+    const leftLegStraight = player.animation.leftLeg.isStraight;
+    const rightLegStraight = player.animation.rightLeg.isStraight;
 
-    const IMAGE_SCALE = 0.6;
+    const IMAGE_SCALE = 0.3;
 
     const BODY_IMG_WIDTH = 100 * IMAGE_SCALE;
     const BODY_IMG_HEIGHT = 200 * IMAGE_SCALE;
@@ -107,7 +85,7 @@ export function render(world: World) {
     const topX = position.x - BODY_IMG_CENTER_X;
     const topY = position.y - BODY_IMG_CENTER_Y;
 
-    if (player.team === "red") {
+    if (player.animation.direction === -1) {
       ctx.translate(topX + BODY_IMG_WIDTH, topY);
       ctx.scale(-1, 1);
     } else {
