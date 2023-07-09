@@ -215,6 +215,11 @@ function getShootIntent(player: Player, world: World) {
     return intent;
   }
 
+  if (!world.ball.velocity.isZero()) {
+    intent.score -= 50;
+    return intent;
+  }
+
   if (world.ball.owner !== player) {
     intent.score -= 50;
     return intent;

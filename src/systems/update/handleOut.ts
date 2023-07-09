@@ -1,5 +1,6 @@
 import { Vector2 } from "../../math/Vector2";
 import { assert } from "../../utils/assert";
+import { playShortWhistle } from "../sounds";
 import { Player, World } from "../types";
 
 export function handleOut(world: World) {
@@ -22,6 +23,8 @@ export function handleOut(world: World) {
       world.ball.velocity.set(0, 0);
 
       if (world.gameState.type === "Playing") {
+        playShortWhistle();
+
         if (isGoalkeeper) {
           const startingPlayer = world.players.find(
             (p) => p.team !== world.ball.lastTouchedBy && p.isGoalkeeper

@@ -1,8 +1,11 @@
 import { assert } from "../../utils/assert";
 import { randomChoice } from "../../utils/random";
+import { playLongWhistle } from "../sounds";
 import { World } from "../types";
 
 export function handleGoal(world: World, startingTeam: "red" | "blue") {
+  playLongWhistle();
+
   world.scores[startingTeam === "red" ? "blue" : "red"] += 1;
 
   const startingPlayer = randomChoice(

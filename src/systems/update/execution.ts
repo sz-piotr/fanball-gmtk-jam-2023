@@ -1,4 +1,5 @@
 import { assertUnreachable } from "../../utils/assert";
+import { kickSound } from "../sounds";
 import { Player, World } from "../types";
 import { Intent, MoveIntent, PassIntent, ShootIntent } from "./intents";
 
@@ -48,6 +49,8 @@ function executeMoveIntent(
 }
 
 function executePassIntent(intent: PassIntent, player: Player, world: World) {
+  kickSound.play();
+
   const PASS_SPEED = 40;
   const GOALKEEPER_PASS_SPEED = 80;
 
@@ -70,6 +73,8 @@ function executePassIntent(intent: PassIntent, player: Player, world: World) {
 }
 
 function executeShootIntent(intent: ShootIntent, player: Player, world: World) {
+  kickSound.play();
+
   const SHOT_SPEED = 100;
 
   world.ball.velocity = intent.target

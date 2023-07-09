@@ -1,6 +1,7 @@
 import { Vector2 } from "../../math/Vector2";
 import { random } from "../../utils/random";
 import { Input } from "../input/inputSystem";
+import { cheer, playLongWhistle } from "../sounds";
 import { Ball, Player, World } from "../types";
 import { advanceGameState } from "./advanceGameState";
 import { getIntent } from "./decision";
@@ -24,18 +25,25 @@ export function updateWorld(world: World, input: Input, deltaTime: number) {
       world.time.gameTime = 45 * 60;
       world.time.paused = true;
       switchSides(world);
+      playLongWhistle();
     }
 
     if (world.time.gameTime > 90 * 60) {
       world.time.gameTime = 90 * 60;
       world.time.paused = true;
       world.gameOver = true;
+      playLongWhistle();
     }
   }
 
+  let cheeringLevel = 0;
   for (const sector of world.sectors) {
     updateSector(sector, world, input, deltaTime);
+    if (sector.isCheering) {
+      cheeringLevel += 1;
+    }
   }
+  cheer(cheeringLevel);
 
   for (const player of world.players) {
     const isBooed =

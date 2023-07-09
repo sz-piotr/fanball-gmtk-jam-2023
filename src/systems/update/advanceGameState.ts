@@ -1,3 +1,4 @@
+import { playShortWhistle } from "../sounds";
 import { World } from "../types";
 
 export function advanceGameState(world: World, deltaTime: number) {
@@ -29,6 +30,8 @@ export function advanceGameState(world: World, deltaTime: number) {
         ) {
           return;
         }
+
+        playShortWhistle();
       }
 
       if (world.time.paused) {
