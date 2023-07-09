@@ -97,6 +97,18 @@ export interface World {
     gameTime: number;
     paused: boolean;
   };
+  banner: {
+    image?:
+      | "blue-goal"
+      | "blue-out"
+      | "red-goal"
+      | "red-out"
+      | "half-time"
+      | "gmtk"
+      | "you-win"
+      | "you-lose";
+    timeLeft: number;
+  };
   ui: {
     leftTeam?: "red" | "blue";
     scores: [number, number];

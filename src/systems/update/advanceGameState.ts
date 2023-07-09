@@ -32,6 +32,7 @@ export function advanceGameState(world: World, deltaTime: number) {
         }
 
         playShortWhistle();
+        world.banner.image = undefined;
       }
 
       if (world.time.paused) {

@@ -6,6 +6,11 @@ import { Player, World } from "../types";
 export function handleOut(world: World) {
   if (!world.ball.velocity.isZero()) {
     if (!world.field.rect.contains(world.ball.position)) {
+      playShortWhistle();
+      world.banner.image =
+        world.ball.lastTouchedBy === "red" ? "blue-out" : "red-out";
+      world.banner.timeLeft = 2;
+
       let isGoalkeeper = false;
       if (
         world.ball.position.x < world.field.rect.position.x ||
@@ -23,8 +28,6 @@ export function handleOut(world: World) {
       world.ball.velocity.set(0, 0);
 
       if (world.gameState.type === "Playing") {
-        playShortWhistle();
-
         if (isGoalkeeper) {
           const startingPlayer = world.players.find(
             (p) => p.team !== world.ball.lastTouchedBy && p.isGoalkeeper
@@ -54,6 +57,7 @@ export function handleOut(world: World) {
           }
 
           assert(startingPlayer, "Missing starting player!");
+
           world.gameState = {
             type: "OutKick",
             startingPlayer,

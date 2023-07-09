@@ -6,6 +6,8 @@ import { World } from "../types";
 export function handleGoal(world: World, startingTeam: "red" | "blue") {
   playLongWhistle();
   goalSound.play("goal");
+  world.banner.image = startingTeam === "red" ? "blue-goal" : "red-goal";
+  world.banner.timeLeft = 5;
 
   world.scores[startingTeam === "red" ? "blue" : "red"] += 1;
 

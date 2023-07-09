@@ -169,6 +169,10 @@ export function initWorld(): World {
       rightTeamName,
       rightTeamScore,
     },
+    banner: {
+      image: "gmtk",
+      timeLeft: Infinity,
+    },
   };
 }
 

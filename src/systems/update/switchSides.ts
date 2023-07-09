@@ -3,6 +3,9 @@ import { randomChoice } from "../../utils/random";
 import { World } from "../types";
 
 export function switchSides(world: World) {
+  world.banner.image = "half-time";
+  world.banner.timeLeft = 5;
+
   world.switchedSides = true;
   world.leftTeam = world.leftTeam === "red" ? "blue" : "red";
 

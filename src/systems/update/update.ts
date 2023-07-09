@@ -14,7 +14,8 @@ import { updatePlayerAnimation } from "./updatePlayerAnimation";
 import { updateSector } from "./updateSector";
 
 const HALF_TIME = 2 * 60;
-const TIMER_SPEED = (45 * 60) / HALF_TIME;
+const TIMER_SPEED = 300;
+(45 * 60) / HALF_TIME;
 
 export function updateWorld(world: World, input: Input, deltaTime: number) {
   advanceGameState(world, deltaTime);
@@ -32,7 +33,22 @@ export function updateWorld(world: World, input: Input, deltaTime: number) {
       world.time.gameTime = 90 * 60;
       world.time.paused = true;
       world.gameOver = true;
+      world.ball.velocity.set(0, 0);
+
       playLongWhistle();
+    }
+  }
+
+  if (world.gameOver) {
+    world.banner.image =
+      world.scores.blue > world.scores.red ? "you-win" : "you-lose";
+    world.banner.timeLeft = Infinity;
+  }
+
+  if (world.banner.timeLeft > 0) {
+    world.banner.timeLeft -= deltaTime;
+    if (world.banner.timeLeft <= 0) {
+      world.banner.image = undefined;
     }
   }
 

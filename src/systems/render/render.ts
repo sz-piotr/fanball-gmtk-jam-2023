@@ -5,6 +5,7 @@ import { renderUi } from "./renderUi";
 import { renderFan } from "./renderFan";
 import { renderPlayer } from "./renderPlayer";
 import { renderBall } from "./renderBall";
+import { renderBanners } from "./renderBanners";
 
 let loaded = false;
 const backgroundImage = new Image();
@@ -27,6 +28,7 @@ export function render(world: World) {
   for (const sector of world.sectors) {
     renderSector(ctx, sector);
   }
+  renderBanners(ctx, world);
 
   world.players.sort((a, b) => a.position.y - b.position.y);
 
