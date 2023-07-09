@@ -1,0 +1,5 @@
+<svg width="100" height="200" viewBox="0 0 100 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="35" y="48" width="7" height="13" fill="{{ hair }}" stroke="{{ hairOutline }}" stroke-width="4" stroke-linejoin="round"/>
+<rect x="47" y="44" width="7" height="13" fill="{{ hair }}" stroke="{{ hairOutline }}" stroke-width="4" stroke-linejoin="round"/>
+<rect x="59" y="48" width="7" height="13" fill="{{ hair }}" stroke="{{ hairOutline }}" stroke-width="4" stroke-linejoin="round"/>
+</svg>
