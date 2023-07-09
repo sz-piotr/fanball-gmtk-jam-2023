@@ -14,6 +14,7 @@ export function handleGoal(world: World, startingTeam: "red" | "blue") {
     type: "Starting",
     startingPlayer,
     timeRemaining: Infinity,
+    isGoal: true,
   };
 
   world.ball.position.set(0, 0);

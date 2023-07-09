@@ -9,6 +9,7 @@ export interface StartingState {
   type: "Starting";
   startingPlayer: Player;
   timeRemaining: number;
+  isGoal: boolean;
 }
 
 export interface GoalkeeperKickState {

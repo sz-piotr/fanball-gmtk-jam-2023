@@ -12,10 +12,13 @@ import { updateFanAnimation } from "./updateFanAnimation";
 import { updatePlayerAnimation } from "./updatePlayerAnimation";
 import { updateSector } from "./updateSector";
 
+const HALF_TIME = 2 * 60;
+const TIMER_SPEED = (45 * 60) / HALF_TIME;
+
 export function updateWorld(world: World, input: Input, deltaTime: number) {
   advanceGameState(world, deltaTime);
   if (!world.time.paused) {
-    world.time.gameTime += deltaTime * 10;
+    world.time.gameTime += deltaTime * TIMER_SPEED;
 
     if (world.time.gameTime > 45 * 60 && !world.switchedSides) {
       world.time.gameTime = 45 * 60;
@@ -31,7 +34,7 @@ export function updateWorld(world: World, input: Input, deltaTime: number) {
   }
 
   for (const sector of world.sectors) {
-    updateSector(sector, input, deltaTime);
+    updateSector(sector, world, input, deltaTime);
   }
 
   for (const player of world.players) {

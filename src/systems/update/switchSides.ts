@@ -15,6 +15,7 @@ export function switchSides(world: World) {
     type: "Starting",
     startingPlayer,
     timeRemaining: Infinity,
+    isGoal: false,
   };
 
   for (const player of world.players) {

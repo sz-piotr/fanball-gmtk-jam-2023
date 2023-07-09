@@ -1,8 +1,19 @@
 import { clamp } from "../../utils/clamp";
 import { Input } from "../input/inputSystem";
-import { Sector } from "../types";
+import { Sector, World } from "../types";
 
-export function updateSector(sector: Sector, input: Input, deltaTime: number) {
+export function updateSector(
+  sector: Sector,
+  world: World,
+  input: Input,
+  deltaTime: number
+) {
+  if (world.gameState.type === "Starting" && world.gameState.isGoal) {
+    sector.energyRegeneration = sector.baseEnergyRegeneration * 10;
+  } else {
+    sector.energyRegeneration = sector.baseEnergyRegeneration;
+  }
+
   if (input.isPressed(`sector${sector.id}`)) {
     if (input.isPressed("boo")) {
       sector.isCheering = false;

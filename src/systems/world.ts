@@ -115,6 +115,7 @@ export function initWorld(): World {
       type: "Starting",
       startingPlayer: startingPlayer,
       timeRemaining: Infinity,
+      isGoal: false,
     },
     ball: {
       position: new Vector2(0, 0),
@@ -207,6 +208,9 @@ function makePlayer(options: {
   defensive: Vector2;
   offensive: Vector2;
 }): Player {
+  const control =
+    (options.team === "red" ? 12 : 8) * (options.isGoalkeeper ? 1.5 : 1);
+  const accuracy = options.team === "red" ? 55 : 45;
   return {
     id: uuid(),
     team: options.team,
@@ -214,11 +218,11 @@ function makePlayer(options: {
     canStart: !!options.canStart,
     speed: 20,
     baseSpeed: 20,
-    control: 10,
-    baseControl: 10,
+    control: control,
+    baseControl: control,
     controlRadius: 10,
-    accuracy: 50,
-    baseAccuracy: 50,
+    accuracy: accuracy,
+    baseAccuracy: accuracy,
     position: options.defensive.clone().mul(FIELD_WIDTH, FIELD_HEIGHT),
     defensivePosition: options.defensive.clone().mul(FIELD_WIDTH, FIELD_HEIGHT),
     offensivePosition: options.offensive.clone().mul(FIELD_WIDTH, FIELD_HEIGHT),
