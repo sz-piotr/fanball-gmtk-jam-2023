@@ -35,6 +35,32 @@ export function updateWorld(world: World, input: Input, deltaTime: number) {
   }
 
   for (const player of world.players) {
+    const isBooed =
+      player.team === "red" &&
+      world.sectors.some(
+        (x) => x.isBooing && x.playerArea.contains(player.position)
+      );
+
+    const isCheered =
+      player.team === "blue" &&
+      world.sectors.some(
+        (x) => x.isCheering && x.playerArea.contains(player.position)
+      );
+
+    if (isBooed) {
+      player.accuracy = 30;
+      player.control = 10;
+      player.speed = 15;
+    } else if (isCheered) {
+      player.accuracy = 90;
+      player.control = 30;
+      player.speed = 30;
+    } else {
+      player.accuracy = player.baseAccuracy;
+      player.control = player.baseControl;
+      player.speed = player.baseSpeed;
+    }
+
     const intent = getIntent(player, world);
     executeIntent(intent, player, world, deltaTime);
 
