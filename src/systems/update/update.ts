@@ -1,7 +1,7 @@
 import { Vector2 } from "../../math/Vector2";
 import { random } from "../../utils/random";
 import { Input } from "../input/inputSystem";
-import { cheer, playLongWhistle } from "../sounds";
+import { boo, cheer, playLongWhistle } from "../sounds";
 import { Ball, Player, World } from "../types";
 import { advanceGameState } from "./advanceGameState";
 import { getIntent } from "./decision";
@@ -37,13 +37,18 @@ export function updateWorld(world: World, input: Input, deltaTime: number) {
   }
 
   let cheeringLevel = 0;
+  let booingLevel = 0;
   for (const sector of world.sectors) {
     updateSector(sector, world, input, deltaTime);
     if (sector.isCheering) {
       cheeringLevel += 1;
     }
+    if (sector.isBooing) {
+      booingLevel += 1;
+    }
   }
   cheer(cheeringLevel);
+  boo(booingLevel);
 
   for (const player of world.players) {
     const isBooed =
