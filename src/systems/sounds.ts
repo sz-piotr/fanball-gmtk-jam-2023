@@ -2,17 +2,10 @@ import { Howl } from "howler";
 import { randomChoice } from "../utils/random";
 
 import crowdMp3 from "../audio/crowd.mp3";
-import discoMp3 from "../audio/disco.mp3";
 import kickMp3 from "../audio/kick.mp3";
 import whistleMp3 from "../audio/whistle.mp3";
 import cheeringMp3 from "../audio/cheering.mp3";
 import { clamp } from "../utils/clamp";
-
-const discoMusic = new Howl({
-  src: [discoMp3],
-  html5: true,
-  loop: true,
-});
 
 const crowdAmbiance = new Howl({
   src: [crowdMp3],
@@ -69,12 +62,10 @@ export function cheer(level: number) {
 
 export function initMusic() {
   crowdCheering.volume(0);
-  discoMusic.volume(0.03);
   crowdAmbiance.volume(0.5);
   kickSound.volume(0.5);
   whistle.volume(1);
 
-  discoMusic.play();
   crowdAmbiance.play();
   crowdCheering.play();
 }
