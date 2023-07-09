@@ -11,7 +11,7 @@ import {
 
 export function getIntent(player: Player, world: World) {
   const intents: Intent[] = [
-    getBePassiveIntent(),
+    getBePassiveIntent(world),
     getOffensiveMoveIntent(player, world),
     getDefensiveMoveIntent(player, world),
     getChaseBallIntent(player, world),
@@ -27,8 +27,8 @@ export function getIntent(player: Player, world: World) {
   return bestIntent;
 }
 
-function getBePassiveIntent(): BePassiveIntent {
-  return { type: "BePassive", score: 0 };
+function getBePassiveIntent(world: World): BePassiveIntent {
+  return { type: "BePassive", score: world.gameOver ? 1000 : 0 };
 }
 
 function getOffensiveMoveIntent(player: Player, world: World) {

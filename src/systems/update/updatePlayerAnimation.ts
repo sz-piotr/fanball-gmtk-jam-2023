@@ -4,10 +4,14 @@ const LEG_SPEED = Math.PI * 2;
 const MIN_ANGLE = -Math.PI / 5;
 const MAX_ANGLE = Math.PI / 4;
 
-export function updatePlayerAnimation(player: Player, deltaTime: number) {
+export function updatePlayerAnimation(
+  player: Player,
+  leftTeam: "red" | "blue",
+  deltaTime: number
+) {
   const stationary = player.animation.lastPosition.equals(player.position);
   const direction = stationary
-    ? player.team === "red"
+    ? player.team === leftTeam
       ? -1
       : 1
     : player.animation.lastPosition.x > player.position.x

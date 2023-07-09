@@ -19,6 +19,22 @@ export function advanceGameState(world: World, deltaTime: number) {
     }
 
     if (world.gameState.timeRemaining < 0) {
+      if (world.gameState.type === "Starting") {
+        if (
+          world.players.some(
+            (x) =>
+              !x.position.equals(x.defensivePosition) &&
+              x !== world.gameState.startingPlayer
+          )
+        ) {
+          return;
+        }
+      }
+
+      if (world.time.paused) {
+        world.time.paused = false;
+      }
+
       world.gameState = {
         type: "Playing",
         startingPlayer: world.gameState.startingPlayer,

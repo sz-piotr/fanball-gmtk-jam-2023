@@ -123,10 +123,17 @@ export function initWorld(): World {
     ],
     players,
     fans,
+    startingTeam,
     leftTeam: "red",
+    switchedSides: false,
+    gameOver: false,
     scores: {
       red: 0,
       blue: 0,
+    },
+    time: {
+      gameTime: 0,
+      paused: true,
     },
     ui: {
       scores: [0, 0],
@@ -193,7 +200,7 @@ function makePlayer(options: {
     animation: {
       isStationary: true,
       lastPosition: new Vector2(0, 0),
-      direction: options.team === "red" ? 1 : -1,
+      direction: 1,
       leftLeg: {
         rotation: 0,
         angularVelocity: 0,

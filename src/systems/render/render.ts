@@ -157,6 +157,14 @@ export function render(world: World) {
     world.ui.leftTeamScore.innerText = scores[0].toString();
     world.ui.rightTeamScore.innerText = scores[1].toString();
   }
+
+  const minutes = Math.floor(world.time.gameTime / 60);
+  const seconds = Math.floor(world.time.gameTime) % 60;
+  const time =
+    minutes.toString().padStart(2, "0") +
+    ":" +
+    seconds.toString().padStart(2, "0");
+  world.ui.timer.innerText = time;
 }
 
 function drawRotatedImage(

@@ -71,10 +71,17 @@ export interface World {
   goals: Goal[];
   players: Player[];
   fans: Fan[];
+  startingTeam: "red" | "blue";
   leftTeam: "red" | "blue";
+  switchedSides: boolean;
+  gameOver: boolean;
   scores: {
     red: number;
     blue: number;
+  };
+  time: {
+    gameTime: number;
+    paused: boolean;
   };
   ui: {
     leftTeam?: "red" | "blue";

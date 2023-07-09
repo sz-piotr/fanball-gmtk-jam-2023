@@ -51,7 +51,7 @@ function executePassIntent(intent: PassIntent, player: Player, world: World) {
   const PASS_SPEED = 40;
   const GOALKEEPER_PASS_SPEED = 80;
 
-  let movementSpeed = (player.team === "red" ? 1 : -1) * player.speed;
+  let movementSpeed = (player.team === world.leftTeam ? 1 : -1) * player.speed;
   if (
     world.gameState.type === "Playing" &&
     world.gameState.startingPlayer === player

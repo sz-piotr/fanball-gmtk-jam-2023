@@ -1,6 +1,6 @@
 import { Vector2 } from "../../math/Vector2";
 import { assert } from "../../utils/assert";
-import { randomChoice } from "../../utils/random";
+import { random, randomChoice } from "../../utils/random";
 import { Input } from "../input/inputSystem";
 import { Ball, Goal, Player, World } from "../types";
 import { advanceGameState } from "./advanceGameState";
@@ -11,6 +11,21 @@ import { updatePlayerAnimation } from "./updatePlayerAnimation";
 
 export function updateWorld(world: World, input: Input, deltaTime: number) {
   advanceGameState(world, deltaTime);
+  if (!world.time.paused) {
+    world.time.gameTime += deltaTime * 10;
+
+    if (world.time.gameTime > 45 * 60 && !world.switchedSides) {
+      world.time.gameTime = 45 * 60;
+      world.time.paused = true;
+      switchSides(world);
+    }
+
+    if (world.time.gameTime > 90 * 60) {
+      world.time.gameTime = 90 * 60;
+      world.time.paused = true;
+      world.gameOver = true;
+    }
+  }
 
   for (const player of world.players) {
     const intent = getIntent(player, world);
@@ -22,15 +37,14 @@ export function updateWorld(world: World, input: Input, deltaTime: number) {
       }
 
       if (world.ball.owner === player) {
-        pushBall(player, deltaTime, world.ball);
+        pushBall(player, world.leftTeam, deltaTime, world.ball);
+      }
+      for (const other of world.players) {
+        pushAway(player, other, 5);
       }
     }
 
-    for (const other of world.players) {
-      pushAway(player, other, 5);
-    }
-
-    updatePlayerAnimation(player, deltaTime);
+    updatePlayerAnimation(player, world.leftTeam, deltaTime);
   }
 
   for (const fan of world.fans) {
@@ -115,14 +129,19 @@ export function updateWorld(world: World, input: Input, deltaTime: number) {
   }
 }
 
-function pushBall(player: Player, deltaTime: number, ball: Ball) {
+function pushBall(
+  player: Player,
+  leftTeam: "red" | "blue",
+  deltaTime: number,
+  ball: Ball
+) {
   if (!ball.velocity.isZero()) {
     if (!isNearPlayer(player, ball.position)) {
       ball.owner = undefined;
     }
     return;
   }
-  const direction = player.team === "red" ? 1 : -1;
+  const direction = player.team === leftTeam ? 1 : -1;
   ball.position
     .set(player.position)
     .add((player.controlRadius / 2) * direction, 0);
@@ -156,11 +175,14 @@ function pushAway(player: Player, other: Player, strength: number) {
     return;
   }
 
+  const angle = random(-Math.PI / 20, Math.PI / 20);
+
   const push = other.position
     .clone()
     .sub(player.position)
     .normalize()
-    .mul(((radius2 - distance2) / radius2) * strength);
+    .mul(((radius2 - distance2) / radius2) * strength)
+    .rotate(angle);
 
   other.position.add(push);
 }
@@ -178,6 +200,35 @@ function afterGoal(world: World, startingTeam: "red" | "blue") {
     startingPlayer,
     timeRemaining: Infinity,
   };
+
+  world.ball.position.set(0, 0);
+  world.ball.velocity.set(0, 0);
+  world.ball.owner = undefined;
+}
+
+function switchSides(world: World) {
+  world.switchedSides = true;
+  world.leftTeam = world.leftTeam === "red" ? "blue" : "red";
+
+  const startingTeam = world.startingTeam === "red" ? "blue" : "red";
+  const startingPlayer = randomChoice(
+    world.players.filter((p) => p.team === startingTeam && p.canStart)
+  );
+  assert(startingPlayer, "No starting player");
+  world.gameState = {
+    type: "Starting",
+    startingPlayer,
+    timeRemaining: Infinity,
+  };
+
+  for (const player of world.players) {
+    player.defensivePosition.mul(-1, 1);
+    player.offensivePosition.mul(-1, 1);
+  }
+
+  for (const goal of world.goals) {
+    goal.team = goal.team === "red" ? "blue" : "red";
+  }
 
   world.ball.position.set(0, 0);
   world.ball.velocity.set(0, 0);
