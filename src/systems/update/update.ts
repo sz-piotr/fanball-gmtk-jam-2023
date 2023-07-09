@@ -1,14 +1,16 @@
 import { Vector2 } from "../../math/Vector2";
-import { assert } from "../../utils/assert";
-import { clamp } from "../../utils/clamp";
-import { random, randomChoice } from "../../utils/random";
+import { random } from "../../utils/random";
 import { Input } from "../input/inputSystem";
-import { Ball, Goal, Player, World } from "../types";
+import { Ball, Player, World } from "../types";
 import { advanceGameState } from "./advanceGameState";
 import { getIntent } from "./decision";
 import { executeIntent } from "./execution";
+import { handleGoal } from "./handleGoal";
+import { handleOut } from "./handleOut";
+import { switchSides } from "./switchSides";
 import { updateFanAnimation } from "./updateFanAnimation";
 import { updatePlayerAnimation } from "./updatePlayerAnimation";
+import { updateSector } from "./updateSector";
 
 export function updateWorld(world: World, input: Input, deltaTime: number) {
   advanceGameState(world, deltaTime);
@@ -26,6 +28,10 @@ export function updateWorld(world: World, input: Input, deltaTime: number) {
       world.time.paused = true;
       world.gameOver = true;
     }
+  }
+
+  for (const sector of world.sectors) {
+    updateSector(sector, input, deltaTime);
   }
 
   for (const player of world.players) {
@@ -48,33 +54,6 @@ export function updateWorld(world: World, input: Input, deltaTime: number) {
     updatePlayerAnimation(player, world.leftTeam, deltaTime);
   }
 
-  for (const sector of world.sectors) {
-    if (input.isPressed(`sector${sector.id}`)) {
-      if (input.isPressed("boo")) {
-        sector.isCheering = false;
-        sector.isBooing = true;
-
-        sector.energy -= 20 * deltaTime;
-      } else {
-        sector.isCheering = true;
-        sector.isBooing = false;
-
-        sector.energy -= 10 * deltaTime;
-      }
-    } else {
-      sector.isCheering = false;
-      sector.isBooing = false;
-
-      sector.energy += sector.energyRegeneration * deltaTime;
-    }
-
-    sector.energy = clamp(sector.energy, 0, 100);
-    if (sector.energy === 0) {
-      sector.isCheering = false;
-      sector.isBooing = false;
-    }
-  }
-
   for (const fan of world.fans) {
     updateFanAnimation(fan, deltaTime);
   }
@@ -83,70 +62,14 @@ export function updateWorld(world: World, input: Input, deltaTime: number) {
 
   for (const goal of world.goals) {
     if (goal.rect.contains(world.ball.position)) {
-      afterGoal(world, goal.team);
+      handleGoal(world, goal.team);
     }
   }
 
   const BALL_ACCELERATION = 0.99;
   world.ball.velocity.mul(BALL_ACCELERATION);
 
-  if (!world.ball.velocity.isZero()) {
-    if (!world.field.rect.contains(world.ball.position)) {
-      let isGoalkeeper = false;
-      if (
-        world.ball.position.x < world.field.rect.position.x ||
-        world.ball.position.x >
-          world.field.rect.position.x + world.field.rect.size.x
-      ) {
-        // TODO: handle corner
-        isGoalkeeper = true;
-      }
-
-      world.ball.position.clamp(
-        world.field.rect.position,
-        world.field.rect.position.clone().add(world.field.rect.size)
-      );
-      world.ball.velocity.set(0, 0);
-
-      if (world.gameState.type === "Playing") {
-        if (isGoalkeeper) {
-          const startingPlayer = world.players.find(
-            (p) => p.team !== world.ball.lastTouchedBy && p.isGoalkeeper
-          );
-
-          assert(startingPlayer, "Missing starting player!");
-          world.ball.position.set(startingPlayer.offensivePosition);
-          world.gameState = {
-            type: "GoalkeeperKick",
-            startingPlayer,
-            timeRemaining: Infinity,
-          };
-        } else {
-          let startingPlayer: Player | undefined;
-          let minDistance = Infinity;
-          for (const player of world.players) {
-            if (player.team !== world.ball.lastTouchedBy) {
-              const distance = Vector2.distance2(
-                world.ball.position,
-                player.position
-              );
-              if (distance < minDistance) {
-                minDistance = distance;
-                startingPlayer = player;
-              }
-            }
-          }
-
-          assert(startingPlayer, "Missing starting player!");
-          world.gameState = {
-            type: "OutKick",
-            startingPlayer,
-            timeRemaining: Infinity,
-          };
-        }
-      }
-    }
-  }
+  handleOut(world);
 }
 
 function pushBall(
@@ -205,52 +128,4 @@ function pushAway(player: Player, other: Player, strength: number) {
     .rotate(angle);
 
   other.position.add(push);
-}
-
-function afterGoal(world: World, startingTeam: "red" | "blue") {
-  world.scores[startingTeam === "red" ? "blue" : "red"] += 1;
-
-  const startingPlayer = randomChoice(
-    world.players.filter((p) => p.team === startingTeam && p.canStart)
-  );
-  assert(startingPlayer, "No starting player");
-
-  world.gameState = {
-    type: "Starting",
-    startingPlayer,
-    timeRemaining: Infinity,
-  };
-
-  world.ball.position.set(0, 0);
-  world.ball.velocity.set(0, 0);
-  world.ball.owner = undefined;
-}
-
-function switchSides(world: World) {
-  world.switchedSides = true;
-  world.leftTeam = world.leftTeam === "red" ? "blue" : "red";
-
-  const startingTeam = world.startingTeam === "red" ? "blue" : "red";
-  const startingPlayer = randomChoice(
-    world.players.filter((p) => p.team === startingTeam && p.canStart)
-  );
-  assert(startingPlayer, "No starting player");
-  world.gameState = {
-    type: "Starting",
-    startingPlayer,
-    timeRemaining: Infinity,
-  };
-
-  for (const player of world.players) {
-    player.defensivePosition.mul(-1, 1);
-    player.offensivePosition.mul(-1, 1);
-  }
-
-  for (const goal of world.goals) {
-    goal.team = goal.team === "red" ? "blue" : "red";
-  }
-
-  world.ball.position.set(0, 0);
-  world.ball.velocity.set(0, 0);
-  world.ball.owner = undefined;
 }
