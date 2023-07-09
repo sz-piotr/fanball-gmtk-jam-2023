@@ -6,6 +6,7 @@ import { renderFan } from "./renderFan";
 import { renderPlayer } from "./renderPlayer";
 import { renderBall } from "./renderBall";
 import { renderBanners } from "./renderBanners";
+import { renderPlane } from "./renderHintPlane";
 
 let loaded = false;
 const backgroundImage = new Image();
@@ -24,6 +25,7 @@ export function render(world: World) {
   }
 
   ctx.drawImage(backgroundImage, 0, 0, width, height);
+  renderPlane(ctx, world);
 
   for (const sector of world.sectors) {
     renderSector(ctx, sector);
