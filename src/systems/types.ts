@@ -46,13 +46,26 @@ export interface Player {
 
 export interface Fan {
   id: string;
-  sector: 1 | 2 | 3 | 4 | 5 | 6;
+  sector: Sector;
   position: Vector2;
   animation: {
     progress: number;
     position: Vector2;
     intensity: number;
   };
+}
+
+export interface Sector {
+  id: 1 | 2 | 3 | 4 | 5 | 6;
+  isCheering: boolean;
+  isBooing: boolean;
+  energyRegeneration: number;
+  baseEnergyRegeneration: number;
+  energy: number;
+  fanArea: Rect;
+  playerArea: Rect;
+  displayArea: Rect;
+  fans: Fan[];
 }
 
 export interface Ball {
@@ -71,6 +84,7 @@ export interface World {
   goals: Goal[];
   players: Player[];
   fans: Fan[];
+  sectors: Sector[];
   startingTeam: "red" | "blue";
   leftTeam: "red" | "blue";
   switchedSides: boolean;

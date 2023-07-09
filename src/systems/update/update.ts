@@ -1,5 +1,6 @@
 import { Vector2 } from "../../math/Vector2";
 import { assert } from "../../utils/assert";
+import { clamp } from "../../utils/clamp";
 import { random, randomChoice } from "../../utils/random";
 import { Input } from "../input/inputSystem";
 import { Ball, Goal, Player, World } from "../types";
@@ -47,15 +48,34 @@ export function updateWorld(world: World, input: Input, deltaTime: number) {
     updatePlayerAnimation(player, world.leftTeam, deltaTime);
   }
 
-  for (const fan of world.fans) {
-    if (input.isPressed(`sector${fan.sector}`)) {
-      fan.animation.intensity = 4;
+  for (const sector of world.sectors) {
+    if (input.isPressed(`sector${sector.id}`)) {
       if (input.isPressed("boo")) {
-        fan.animation.intensity = 0;
+        sector.isCheering = false;
+        sector.isBooing = true;
+
+        sector.energy -= 20 * deltaTime;
+      } else {
+        sector.isCheering = true;
+        sector.isBooing = false;
+
+        sector.energy -= 10 * deltaTime;
       }
     } else {
-      fan.animation.intensity = 1;
+      sector.isCheering = false;
+      sector.isBooing = false;
+
+      sector.energy += sector.energyRegeneration * deltaTime;
     }
+
+    sector.energy = clamp(sector.energy, 0, 100);
+    if (sector.energy === 0) {
+      sector.isCheering = false;
+      sector.isBooing = false;
+    }
+  }
+
+  for (const fan of world.fans) {
     updateFanAnimation(fan, deltaTime);
   }
 

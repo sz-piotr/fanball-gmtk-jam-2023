@@ -5,13 +5,11 @@ export class KeyboardInput {
 
   startListening() {
     const onPressed = (e: KeyboardEvent) => {
-      console.debug(this.constructor.name, "onPressed", e.code);
       this.pressedKeys.add(e.code);
       this.justPressedKeys.add(e.code);
     };
     window.addEventListener("keydown", onPressed);
     const onReleased = (e: KeyboardEvent) => {
-      console.debug(this.constructor.name, "onReleased", e.code);
       this.pressedKeys.delete(e.code);
       this.justReleasedKeys.add(e.code);
     };

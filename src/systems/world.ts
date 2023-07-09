@@ -1,7 +1,7 @@
 import { Vector2 } from "../math/Vector2";
 import { IS_DEVELOPMENT } from "../config";
 import { Rect } from "../math/Rect";
-import { World, Player, Fan } from "./types";
+import { World, Player, Fan, Sector } from "./types";
 import { randomChoice } from "../utils/random";
 import { assert } from "../utils/assert";
 import { v4 as uuid } from "uuid";
@@ -41,24 +41,46 @@ export function initWorld(): World {
 
   const fans: Fan[] = [];
   const SECTOR_WIDTH = 130;
-  const FIRST_SECTOR_OFFSET = 19;
+  const FIRST_SECTOR_OFFSET = 10;
   const LAST_ROW_START = 252;
   const ROW_HEIGHT = 23;
   const MAX_COLUMNS = 6;
-  const COLUMN_WIDTH = (SECTOR_WIDTH * 0.9) / MAX_COLUMNS;
-  const COLUMN_OFFSET = (SECTOR_WIDTH - COLUMN_WIDTH * MAX_COLUMNS) / 2;
 
-  for (const sector of [1, 2, 3, 4, 5, 6] as const) {
+  const VIEWER_AREA = 0.8;
+  const COLUMN_WIDTH = (SECTOR_WIDTH * VIEWER_AREA) / (MAX_COLUMNS - 1);
+  const COLUMN_OFFSET = (SECTOR_WIDTH * (1 - VIEWER_AREA)) / 2;
+
+  const sectors: Sector[] = [];
+
+  for (const sectorId of [1, 2, 3, 4, 5, 6] as const) {
+    const START = FIRST_SECTOR_OFFSET + (sectorId - 1) * SECTOR_WIDTH;
+    const sector: Sector = {
+      id: sectorId,
+      isCheering: false,
+      isBooing: false,
+      energyRegeneration: 2,
+      baseEnergyRegeneration: 2,
+      energy: 100,
+      displayArea: new Rect(new Vector2(START + 4, 260), new Vector2(122, 36)),
+      fanArea: new Rect(new Vector2(START, 96), new Vector2(130, 160)),
+      playerArea: new Rect(
+        new Vector2(
+          (FIELD_WIDTH / 6) * (sectorId - 1) - FIELD_WIDTH / 2,
+          (-FIELD_HEIGHT * 1.1) / 2
+        ),
+        new Vector2(FIELD_WIDTH / 6, FIELD_HEIGHT * 1.1)
+      ),
+      fans: [],
+    };
+    sectors.push(sector);
+
     for (let row = 5; row >= 0; row--) {
       for (let column = 0; column < 6; column++) {
-        fans.push({
+        const fan: Fan = {
           id: uuid(),
           sector,
           position: new Vector2(
-            FIRST_SECTOR_OFFSET +
-              (sector - 1) * SECTOR_WIDTH +
-              COLUMN_OFFSET +
-              column * COLUMN_WIDTH,
+            START + COLUMN_OFFSET + column * COLUMN_WIDTH,
             LAST_ROW_START - row * ROW_HEIGHT
           ),
           animation: {
@@ -66,7 +88,9 @@ export function initWorld(): World {
             intensity: 1,
             position: new Vector2(0, 0),
           },
-        });
+        };
+        fans.push(fan);
+        sector.fans.push(fan);
       }
     }
   }
@@ -123,6 +147,7 @@ export function initWorld(): World {
     ],
     players,
     fans,
+    sectors,
     startingTeam,
     leftTeam: "red",
     switchedSides: false,
