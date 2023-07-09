@@ -71,4 +71,18 @@ export interface World {
   goals: Goal[];
   players: Player[];
   fans: Fan[];
+  leftTeam: "red" | "blue";
+  scores: {
+    red: number;
+    blue: number;
+  };
+  ui: {
+    leftTeam?: "red" | "blue";
+    scores: [number, number];
+    leftTeamName: HTMLElement;
+    leftTeamScore: HTMLElement;
+    timer: HTMLElement;
+    rightTeamName: HTMLElement;
+    rightTeamScore: HTMLElement;
+  };
 }

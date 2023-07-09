@@ -166,6 +166,8 @@ function pushAway(player: Player, other: Player, strength: number) {
 }
 
 function afterGoal(world: World, startingTeam: "red" | "blue") {
+  world.scores[startingTeam === "red" ? "blue" : "red"] += 1;
+
   const startingPlayer = randomChoice(
     world.players.filter((p) => p.team === startingTeam && p.canStart)
   );

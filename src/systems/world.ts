@@ -71,6 +71,19 @@ export function initWorld(): World {
     }
   }
 
+  const leftTeamName = document.querySelector<HTMLElement>("#left-team-name");
+  const leftTeamScore = document.querySelector<HTMLElement>("#left-team-score");
+  const timer = document.querySelector<HTMLElement>("#timer");
+  const rightTeamName = document.querySelector<HTMLElement>("#right-team-name");
+  const rightTeamScore =
+    document.querySelector<HTMLElement>("#right-team-score");
+
+  assert(leftTeamName, "Missing element!");
+  assert(leftTeamScore, "Missing element!");
+  assert(timer, "Missing element!");
+  assert(rightTeamName, "Missing element!");
+  assert(rightTeamScore, "Missing element!");
+
   return {
     canvas,
     ctx,
@@ -110,6 +123,19 @@ export function initWorld(): World {
     ],
     players,
     fans,
+    leftTeam: "red",
+    scores: {
+      red: 0,
+      blue: 0,
+    },
+    ui: {
+      scores: [0, 0],
+      leftTeamName,
+      leftTeamScore,
+      timer,
+      rightTeamName,
+      rightTeamScore,
+    },
   };
 }
 
