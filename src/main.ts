@@ -5,6 +5,7 @@ import { updateWorld } from "./systems/update/update";
 import { initWorld } from "./systems/world";
 import { render } from "./systems/render/render";
 import { initMusic } from "./systems/sounds";
+import { IS_DEVELOPMENT } from "./config";
 
 function init() {
   const stats = initStats();
@@ -37,6 +38,18 @@ function update(game: ReturnType<typeof init>) {
 
 window.addEventListener("click", onClick);
 function onClick() {
+  document.querySelector("#score-widget")?.classList.remove("opacity-0");
+  document.querySelector("#start-info")?.classList.add("hidden");
+  if (IS_DEVELOPMENT) {
+    document
+      .querySelector("#screen-ui")
+      ?.classList.add(
+        "top-1/2",
+        "left-1/2",
+        "-translate-x-1/2",
+        "-translate-y-1/2"
+      );
+  }
   start();
   window.removeEventListener("click", onClick);
 }

@@ -11,10 +11,15 @@
   <body>
     <script type="module" src="/src/main.ts"></script>
     <div
-      class="w-[800px] h-[600px] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10"
+      id="start-info"
+      class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 text-xl text-white"
     >
+      Click to begin
+    </div>
+    <div id="screen-ui" class="w-[800px] h-[600px] fixed z-10">
       <div
-        class="absolute bottom-2 left-0 w-full flex items-center justify-center select-none"
+        id="score-widget"
+        class="opacity-0 absolute bottom-2 left-0 w-full flex items-center justify-center select-none"
       >
         <div
           class="bg-slate-50 flex text-center text-white shadow-xl rounded overflow-hidden"
