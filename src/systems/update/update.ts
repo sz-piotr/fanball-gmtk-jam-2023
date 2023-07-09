@@ -115,6 +115,7 @@ export function updateWorld(world: World, input: Input, deltaTime: number) {
     updateFanAnimation(fan, deltaTime);
   }
 
+  world.ball.rotation += world.ball.velocity.x * deltaTime;
   world.ball.position.mulAdd(world.ball.velocity, deltaTime);
 
   for (const goal of world.goals) {

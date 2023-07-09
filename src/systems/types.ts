@@ -71,6 +71,7 @@ export interface Sector {
 export interface Ball {
   position: Vector2;
   velocity: Vector2;
+  rotation: number;
   owner?: Player;
   lastTouchedBy: "red" | "blue";
 }

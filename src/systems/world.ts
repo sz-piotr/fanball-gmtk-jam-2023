@@ -121,6 +121,7 @@ export function initWorld(): World {
       position: new Vector2(0, 0),
       velocity: new Vector2(0, 0),
       lastTouchedBy: "red",
+      rotation: 0,
     },
     field: {
       rect: new Rect(

@@ -1,6 +1,7 @@
 import { getPlayerAssets } from "./getAssets";
 import { Player, World } from "../types";
 import { toScreenSpace } from "./toScreenSpace";
+import { drawRotatedImage } from "./drawRotatedImage";
 
 export function renderPlayer(
   ctx: CanvasRenderingContext2D,
@@ -59,24 +60,4 @@ export function renderPlayer(
   ctx.drawImage(assets.hair, 0, 0, BODY_IMG_WIDTH, BODY_IMG_HEIGHT);
 
   ctx.setTransform(1, 0, 0, 1, 0, 0);
-}
-
-function drawRotatedImage(
-  ctx: CanvasRenderingContext2D,
-  image: HTMLImageElement,
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-  centerX: number,
-  centerY: number,
-  angle: number
-) {
-  ctx.save();
-  ctx.translate(x + centerX, y + centerY);
-  ctx.fillStyle = "black";
-  ctx.rotate(angle);
-  ctx.translate(-x - centerX, -y - centerY);
-  ctx.drawImage(image, x, y, width, height);
-  ctx.restore();
 }
